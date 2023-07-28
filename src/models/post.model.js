@@ -11,20 +11,20 @@ const postSchema = new mongoose.Schema(
       required: false,
     },
     user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
+
       required: true,
     },
     category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
+      type: String,
+
       required: true,
     },
-    community:{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Community",
+    community: {
+      type: String,
+
       required: true,
-    }
+    },
   },
   { timestamps: true }
 );

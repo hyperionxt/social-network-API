@@ -20,12 +20,38 @@ export const getPost = async (req, res) => {
 };
 export const createPost = async (req, res) => {
   try {
-
-    const {title, description, } = req.body;
-
+    const { title, description, category, community } = req.body;
+    const newPost = new Post({
+      title,
+      description,
+      user: req.user.id,
+      category,
+      community,
+    });
+    await newPost.save();
+    res.json(newPost);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
 };
-export const deletePost = async (req, res) => {};
-export const updatePost = async (req, res) => {};
+export const deletePost = async (req, res) => {
+  try {
+    const post = await Post.findByIdAndDelete(req.params.id);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+    res.status(204).json({ message: "Post deleted successfully" });
+  } catch (err) {
+    return res.status(404).json({ message: err.message });
+  }
+};
+export const updatePost = async (req, res) => {
+  try {
+    const post = await Post.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+
+    if (!post) return res.status(404).json({ message: "Post not found" });
+    res.json(post);
+  } catch (err) {
+    return res.status(404).json({ message: err.message });
+  }
+};

@@ -1,4 +1,4 @@
-export const validateSchema = (schema) => (req, res, next) => {
+export const schemaValidator = (schema) => (req, res, next) => {
   try {
     schema.parse(req.body);
     next();

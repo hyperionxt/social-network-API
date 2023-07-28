@@ -17,8 +17,7 @@ const communitySchema = new mongoose.Schema(
     },
     category: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        red: "Category",
+        type: String,
         required: true,
       },
     ],

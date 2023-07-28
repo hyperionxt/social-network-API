@@ -20,15 +20,6 @@ export const signUp = async (req, res) => {
 
     const passHash = await bcryptjs.hash(password, 10);
 
-    multer.diskStorage({
-      destination: function (req, file, cb) {
-        cb(null, "./uploads/user");
-      },
-      filename: function (req, file, cb) {
-        cb(null, file.fieldname + "-" + Date.now() + "_" + file.originalname);
-      },
-    });
-
     const newUser = new User({
       email,
       password: passHash,
