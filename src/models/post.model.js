@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 const postSchema = new mongoose.Schema(
   {
@@ -11,20 +11,26 @@ const postSchema = new mongoose.Schema(
       required: false,
     },
     user: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref:"User",
+      required:true
 
-      required: true,
     },
     category: {
-      type: String,
-
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref:"Category",
+      required:true
     },
     community: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref:"Community",
+      required:true
 
-      required: true,
     },
+    edited:{
+      type:Boolean,
+      default:false
+    }
   },
   { timestamps: true }
 );

@@ -43,11 +43,21 @@ export const deletePost = async (req, res) => {
     return res.status(404).json({ message: err.message });
   }
 };
+
+//Normal user only are allowed to update title and description of their posts..
 export const updatePost = async (req, res) => {
   try {
-    const post = await Post.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const post = await Post.findOneAndUpdate(
+      { _id: req.params.id, user: userId },
+      {
+        $set: {
+          title: req.body.title,
+          description: req.body.description,
+          edited: true,
+        },
+      },
+      { new: true }
+    );
 
     if (!post) return res.status(404).json({ message: "Post not found" });
     res.json(post);

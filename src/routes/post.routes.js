@@ -1,8 +1,10 @@
 import Router from "express";
 import {
   createPost,
+  deletePost,
   getPost,
   getPosts,
+  updatePost,
 } from "../controllers/post.controller.js";
 import { authRequired } from "../middlewares/tokenValidator.middleware.js";
 import { validateSchema } from "../../../000_project_one/src/middlewares/validator.middleware.js";
@@ -18,7 +20,7 @@ router.post(
   validateSchema(createPostSchema),
   createPost
 );
-router.delete("/post/:id", authRequired);
-router.put("/post/:id", authRequired);
+router.delete("/post/:id", authRequired, deletePost);
+router.put("/post/:id", authRequired, updatePost);
 
 export default router;
