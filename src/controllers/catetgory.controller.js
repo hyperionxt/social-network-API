@@ -1,15 +1,15 @@
 import Category from "../models/category.model.js";
-import Community from "../models/community.model.js";
+import Post from "../models/post.model.js";
 
 export const getPostsByCategory = async (req, res) => {
   try {
     const categoryMatch = await Category.findById(req.params.id);
     if (!categoryMatch)
       return res.status(404).json({ message: "Category not found" });
-    const community = await Community.find({ category: categoryMatch._id });
-    if (!community)
-      return res.status(404).json({ message: "Community not found" });
-    res.json(community);
+    const post = await Post.find({ category: categoryMatch._id });
+    if (!post)
+      return res.status(404).json({ message: "Post not found" });
+    res.json(post);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }

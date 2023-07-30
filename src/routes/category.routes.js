@@ -1,7 +1,10 @@
 import { Router } from "express";
-import { superUserRequired } from "../middlewares/tokenValidator.middleware.js";
 import {
-    createCategory,
+  authRequired,
+  superUserRequired,
+} from "../middlewares/tokenValidator.middleware.js";
+import {
+  createCategory,
   deleteCategory,
   getPostsByCategory,
   updateCategory,
@@ -14,11 +17,12 @@ const router = Router();
 router.get("/category", getPostsByCategory);
 router.post(
   "/new-category",
+  authRequired,
   superUserRequired,
   schemaValidator(createCategorySchema),
   createCategory
 );
-router.delete("/category", superUserRequired, deleteCategory);
-router.put("/category", superUserRequired, updateCategory);
+router.delete("/category", authRequired, superUserRequired, deleteCategory);
+router.put("/category", authRequired, superUserRequired, updateCategory);
 
-export default router
+export default router;
