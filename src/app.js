@@ -5,6 +5,7 @@ import authRoute from "./routes/auth.routes.js";
 import postRoute from "./routes/post.routes.js";
 import commRoute from "./routes/comm.routes.js";
 import categoryRoute from "./routes/category.routes.js";
+import suscRoute from "./routes/suscription.routes.js";
 
 
 const app = express();
@@ -18,6 +19,7 @@ app.use("/api", authRoute);
 app.use("/api", postRoute);
 app.use("/api", commRoute);
 app.use("/api", categoryRoute);
+app.use("/api", suscRoute)
 
 //if route is not found, send 404 response
 app.use((req, res) => {

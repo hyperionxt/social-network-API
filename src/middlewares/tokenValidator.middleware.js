@@ -11,7 +11,6 @@ export const authRequired = (req, res, next) => {
         return res.status(401).json({ message: "token invalid, unauthorized" });
       console.log("token approved by tokenValidator.middleware!");
       req.user = userDecoded;
-      console.log(req.user)
       next();
     });
   }

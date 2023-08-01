@@ -25,7 +25,7 @@ export const createCommunity = async (req, res) => {
       title,
       description,
       category,
-      author: req.user.id,
+      user: req.user.id,
     });
     await newCommunity.save();
     res.json(newCommunity);
