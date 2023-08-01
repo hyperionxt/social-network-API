@@ -9,9 +9,9 @@ export const authRequired = (req, res, next) => {
     jwt.verify(token, JWT_SECRET_KEY, (err, userDecoded) => {
       if (err)
         return res.status(401).json({ message: "token invalid, unauthorized" });
-      console.log(userDecoded);
       console.log("token approved by tokenValidator.middleware!");
       req.user = userDecoded;
+      console.log(req.user)
       next();
     });
   }

@@ -22,7 +22,7 @@ router.post(
   schemaValidator(createCategorySchema),
   createCategory
 );
-router.delete("/category", authRequired, superUserRequired, deleteCategory);
-router.put("/category", authRequired, superUserRequired, updateCategory);
+router.delete("/category/:id", authRequired, superUserRequired, deleteCategory);
+router.put("/category/:id", authRequired, superUserRequired, updateCategory);
 
 export default router;

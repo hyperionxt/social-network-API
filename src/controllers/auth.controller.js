@@ -3,8 +3,6 @@ import User from "../models/user.model.js";
 //to encrypt the password
 import bcryptjs from "bcryptjs";
 
-
-
 export const signUp = async (req, res) => {
   try {
     const { email, password, username } = req.body;
@@ -27,7 +25,10 @@ export const signUp = async (req, res) => {
     });
 
     const userCreated = await newUser.save();
-    const token = await createAccessToken({ id: userCreated._id });
+    const token = await createAccessToken({
+      id: userCreated._id,
+      superuser: userCreated.superuser,
+    });
 
     res.cookie("token", token);
 
@@ -52,12 +53,16 @@ export const signIn = async (req, res) => {
     const match = await bcryptjs.compare(password, userFound.password);
     if (!match) return res.status(400).json({ message: "Invalid password" });
 
-    const token = await createAccessToken({ id: userFound._id });
+    const token = await createAccessToken({
+      id: userFound._id,
+      superuser: userFound.superuser,
+    });
     res.cookie("token", token);
     res.json({
       id: userFound._id,
       username: userFound.username,
       email: userFound.email,
+      superuser: userFound.superuser,
     });
     console.log("Welcome, " + userFound.username);
   } catch (error) {
@@ -90,6 +95,11 @@ export const profile = async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const { password, ...userData } = req.body;
+    if (req.user.id !== req.params.id) {
+      return res.status(403).json({
+        message: "Unauthorized. You can only modify your own profile.",
+      });
+    }
     if (password) {
       const hashedPassword = await bcryptjs.hash(password, 10);
       userData.password = hashedPassword;

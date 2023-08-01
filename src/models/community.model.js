@@ -10,17 +10,30 @@ const communitySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    author: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
     category: [
       {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
         required: true,
       },
     ],
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment",
+        required: false,
+        default: [],
+      },
+    ],
+    edited: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
