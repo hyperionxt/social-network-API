@@ -12,7 +12,7 @@ import { createPostSchema } from "../schemas/post.schema.js";
 
 const router = Router();
 
-router.get("/index", getPosts);
+router.get("/posts", getPosts);
 router.get("/post/:id", authRequired, getPost);
 router.post(
   "/new-post",

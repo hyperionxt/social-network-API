@@ -11,9 +11,9 @@ export const getPosts = async (req, res) => {
 
 export const getPost = async (req, res) => {
   try {
-    const task = await Post.findById(req.params.id);
-    if (!task) return res.status(404).json({ message: "Task not found" });
-    res.json(task);
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: "post not found" });
+    res.json(post);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -45,7 +45,7 @@ export const deletePost = async (req, res) => {
         return res.status(404).json({ message: "post not found" });
       console.log("post updated successfully by superuser");
 
-      res.status(204).json({ message: "Task deleted successfully" });
+      res.status(204).json({ message: "post deleted successfully" });
     } else {
       const post = await Post.findOneAndDelete({
         _id: req.params.id,
