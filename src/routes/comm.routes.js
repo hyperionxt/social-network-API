@@ -120,6 +120,10 @@ router.get("/community/:id", getCommunity);
  *  post:
  *    summary: Create a new community
  *    tags: [Communities]
+ *    secutiry:
+ *      - bearerAuth: []
+ *      - superuser: true
+ *      - ownerAuth = []
  *    requestBody:
  *      required: true
  *      content:
@@ -133,6 +137,8 @@ router.get("/community/:id", getCommunity);
  *          application/json:
  *            schema:
  *              $ref: '#/components/schemas/Community'
+ *      401:
+ *        description: unauthorized.
  *      500:
  *        description: Some server error
  */
@@ -151,6 +157,10 @@ router.post(
  *  delete:
  *    summary: Delete the community by its id.
  *    tags: [Communities]
+ *    secutiry:
+ *      - bearerAuth: []
+ *      - superuser: true
+ *      - ownerAuth = []
  *    parameters:
  *      - int: path
  *        name: id
@@ -161,6 +171,8 @@ router.post(
  *    responses:
  *      200:
  *        description: The community was deleted
+ *      401:
+ *        description: unauthorized.
  *      404:
  *        description: The community was not found
  *      
@@ -176,6 +188,10 @@ router.delete("/community/:id", authRequired, deleteCommunity);
  *  put:
  *    summary: Update the community by its id.
  *    tags: [Communities]
+ *    security:
+ *      - bearerAuth: []
+ *      - superuser: true
+ *      - ownerAuth = []
  *    parameters:
  *       - in: path
  *         name: id
@@ -196,6 +212,8 @@ router.delete("/community/:id", authRequired, deleteCommunity);
  *          application/json:
  *            schema:
  *              $ref: '#/components/schemas/Community'
+ *      401:
+ *        description: unauthorized.
  *      404:
  *        description: the community was not found.
  *      500:

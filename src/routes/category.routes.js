@@ -80,6 +80,9 @@ router.get("/category/:id", getPostsByCategory);
  *  post:
  *    summary: Create a new category
  *    tags: [Categories]
+ *    security:
+ *      - bearerAuth: []
+ *        superuser: true  
  *    requestBody:
  *      required: true
  *      content:
@@ -111,6 +114,9 @@ router.post(
  *  delete:
  *    summary: Delete the category by its id.
  *    tags: [Categories]
+ *    security:
+ *      - bearerAuth: []
+ *        superuser: true
  *    parameters:
  *      - int: path
  *        name: id
@@ -134,6 +140,9 @@ router.delete("/category/:id", authRequired, superUserRequired, deleteCategory);
  *  put:
  *    summary: Update the category by its id.
  *    tags: [Communities]
+ *    secutiry:
+ *      - bearerAuth: []
+ *        superuser: true
  *    parameters:
  *       - in: path
  *         name: id

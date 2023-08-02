@@ -38,6 +38,7 @@ const router = Router();
  *            description: description's user.
  *          superuser:
  *            type: Boolean
+ *            default: false
  *            description: If the user is a superuser or not
  *          createdAt:
  *            type: Date
@@ -69,7 +70,10 @@ const router = Router();
  *              schemas:
  *                type: array
  *                items:
- *                  $ref: '#/components/schemas/Users'
+ *                  $ref: '#/components/schemas/User'
+ *                token:
+ *                  type: string
+ *                  description: include this token in the header for protected endpoints.
  *        400:
  *          description: email or password arready exists.
  *        500:
@@ -97,14 +101,17 @@ router.post("/signup", schemaValidator(signupSchema), signUp);
  *      content:
  *        application/json:
  *          schema:
- *            $ref: '#/components/schemas/Users'
+ *            $ref: '#/components/schemas/User'
  *    responses:
  *      200:
  *        description: user logged in
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Users'
+ *              $ref: '#/components/schemas/User'
+ *            token:
+ *               type: string
+ *               description: include this token in the header for protected endpoints.
  *      400:
  *          description: invalid credentials.
  *      500:
@@ -120,17 +127,13 @@ router.post("/signin", schemaValidator(signinSchema) ,signIn);
  *  post:
  *    summary: user logout
  *    tags: [Users]
- *      content:
- *        application/json:
- *          schema:
- *            $ref: '#/components/schemas/Users'
  *    responses:
  *      200:
- *        description: user logout
+ *        description: user logout and token deleted
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Users'
+ *              $ref: '#/components/schemas/User'
 
  */
 
@@ -142,6 +145,8 @@ router.post("/signout", signOut);
  *    get:
  *      summary: Get a user profile by its id
  *      tags: [Users]
+ *      security:
+ *        - bearerAuth: []  
  *      responses:
  *        200:
  *          description: user information
@@ -149,6 +154,8 @@ router.post("/signout", signOut);
  *            application/json:
  *              schema:
  *                $ref:'#/components/schemas/Post'
+ *        401:
+ *          description: token invalid.
  *        404:
  *          description: User not found
  */
@@ -162,6 +169,8 @@ router.get("/profile/:id", authRequired, profile)
  *  put:
  *    summary: Update profile
  *    tags: [Users]
+ *    security:
+ *       - bearerAuth: []
  *    parameters:
  *       - in: path
  *         name: id
@@ -182,6 +191,8 @@ router.get("/profile/:id", authRequired, profile)
  *          application/json:
  *            schema:
  *              $ref: '#/components/schemas/Post'
+ *      401:
+ *        description: token invalid.
  *      403:
  *        description: unauthorized, only owners's profile are allowed to update their profiles.
  *      404:

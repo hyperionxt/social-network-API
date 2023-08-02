@@ -62,6 +62,8 @@ import { createPostSchema } from "../schemas/post.schema.js";
  *    get:
  *      summary: Returns the list of all the posts
  *      tags: [Posts]
+ *      security:
+ *        - bearerAuth: []
  *      responses:
  *        200:
  *          description: The list of posts
@@ -117,6 +119,8 @@ router.get("/post/:id", getPost);
  *  post:
  *    summary: Create a new post
  *    tags: [Posts]
+ *    secutiry:
+ *      - bearerAuth: []
  *    requestBody:
  *      required: true
  *      content:
@@ -146,6 +150,10 @@ router.post(
  *  delete:
  *    summary: Delete the post by its id.
  *    tags: [Posts]
+ *    security:
+ *      - bearerAuth: []
+ *      - superuser: true
+ *      - ownerAuth = []
  *    parameters:
  *      - int: path
  *        name: id
@@ -170,6 +178,10 @@ router.delete("/post/:id", authRequired, deletePost);
  *  put:
  *    summary: Update the post by its id.
  *    tags: [Posts]
+ *    security:
+ *        - bearerAuth: []
+ *        - superuser: true
+ *        - ownerAuth = []
  *    parameters:
  *       - in: path
  *         name: id

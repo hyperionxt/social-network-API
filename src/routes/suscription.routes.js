@@ -48,6 +48,8 @@ const router = Router();
  *    get:
  *      summary: Returns a list of the suscriptions's user
  *      tags: [Suscriptions]
+ *      secutiry:
+ *        - bearerAuth: []
  *      responses:
  *        200:
  *          description: The list of suscriptions
@@ -74,21 +76,34 @@ router.get("/suscriptions", authRequired, getSuscriptions);
  * @swagger
  * /api/suscription:
  *  post:
- *    summary: Create a new suscription
- *    tags: [Suscriptions]
+ *    summary: Create a new subscription
+ *    tags: [Subscriptions]
+ *    security:
+ *      - bearerAuth: []
+ *    parameters:
+ *      - in: query
+ *        name: id
+ *        schema:
+ *          type: ObjectId
+ *        required: true
+ *        description: user id      
  *    requestBody:
  *      required: true
  *      content:
  *        application/json:
  *          schema:
- *            $ref: '#/components/schemas/Suscription'
+ *            type: object
+ *            properties:
+ *              community:
+ *                type: ObjectId
+ *                description: The ID of the community for which the subscription is being created.
  *    responses:
  *      200:
- *        description: The suscription was created
+ *        description: The subscription was created
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Community'
+ *              $ref: '#/components/schemas/Subscription'
  *      500:
  *        description: Some server error
  */
@@ -104,20 +119,38 @@ router.post(
  * @swagger
  * /api/suscription/{id}:
  *  delete:
- *    summary: delete the suscription by its id.
+ *    summary: delete suscription(Superuser and suscription's owner only)
  *    tags: [Suscriptions]
+ *    security:
+ *      - bearerAuth: []
+ *      - superuser: true
+ *      - ownerAuth: []
  *    parameters:
- *      - int: path
- *        name: id
+ *      - in: path
+ *        name: id 
  *        schema:
  *          type: ObjectId
  *        required: true
  *        description: The suscription id
+ *      - in: query
+ *        name: id
+ *        schema:
+ *          type: ObjectId
+ *        required: true
+ *        description: user id
  *    responses:
  *      200:
  *        description: The suscriptions was deleted
  *      404:
  *        description: The suscriptions was not found
+ * 
+ *  components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *       description: JSON Web Token (JWT) containing user information, including user ID and role.
  *
  *
  */
