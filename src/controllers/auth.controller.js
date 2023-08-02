@@ -94,25 +94,28 @@ export const profile = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const { password, ...userData } = req.body;
     if (req.user.id !== req.params.id) {
       return res.status(403).json({
         message: "Unauthorized. You can only modify your own profile.",
       });
+    } else {
+      const { password, ...userData } = req.body;
+
+      if (password) {
+        const hashedPassword = await bcryptjs.hash(password, 10);
+        userData.password = hashedPassword;
+      }
+
+      const userFound = await User.findByIdAndUpdate(req.params.id, userData, {
+        new: true,
+      });
+
+      if (!userFound)
+        return res.status(404).json({ message: "User not found" });
+
+      res.json(userFound);
+      console.log("Profile updated successfully");
     }
-    if (password) {
-      const hashedPassword = await bcryptjs.hash(password, 10);
-      userData.password = hashedPassword;
-    }
-
-    const userFound = await User.findByIdAndUpdate(req.params.id, userData, {
-      new: true,
-    });
-
-    if (!userFound) return res.status(404).json({ message: "User not found" });
-
-    res.json(userFound);
-    console.log("Profile updated successfully");
   } catch (error) {
     return res.status(404).json({ message: error.message });
   }

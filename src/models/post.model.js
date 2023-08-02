@@ -12,25 +12,25 @@ const postSchema = new mongoose.Schema(
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref:"User",
-      required:true
-
+      ref: "User",
+      required: true,
     },
-    category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref:"Category",
-      required:true
-    },
+    category: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+        required: true,
+      },
+    ],
     community: {
       type: mongoose.Schema.Types.ObjectId,
-      ref:"Community",
-      required:true
-
+      ref: "Community",
+      required: true,
     },
-    edited:{
-      type:Boolean,
-      default:false
-    }
+    edited: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
