@@ -174,7 +174,7 @@ export const newPassword = async (req, res) => {
       id: userFound._id,
       username: userFound.username,
       email: userFound.email,
-    })
+    });
     return res.status(200).json({ message: "Password updated successfully" });
   } catch (err) {
     return res.status(404).json({ message: err.message });
