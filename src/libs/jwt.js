@@ -20,3 +20,23 @@ export function createAccessToken(payload) {
     );
   });
 }
+
+
+export function createPasswordToken(payload) {
+  return new Promise((resolve, reject) => {
+    jwt.sign(
+      payload,
+      JWT_SECRET_KEY,
+      {
+        expiresIn: "5m",
+      },
+      (err, token) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(token);
+        }
+      }
+    );
+  });
+}

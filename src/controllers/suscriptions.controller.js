@@ -13,9 +13,8 @@ export const getSuscriptions = async (req, res) => {
 };
 export const createSuscription = async (req, res) => {
   try {
-    const { community } = req.body;
     const newSuscription = new Suscription({
-      community,
+      community: req.params.id,
       user: req.user.id,
     });
     await newSuscription.save();

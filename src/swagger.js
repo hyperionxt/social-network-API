@@ -7,7 +7,7 @@ const options = {
     info: {
       title: "Blog API",
       version: "1.0.0",
-      description: "A simple Express Blog API",
+      description: "A simple Express blog API with communities that contains post and users can subcribes to the communities that they want.",
     },
     servers: [
       {

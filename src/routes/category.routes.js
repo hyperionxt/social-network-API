@@ -1,8 +1,6 @@
 import { Router } from "express";
-import {
-  authRequired,
-  superUserRequired,
-} from "../middlewares/tokenValidator.middleware.js";
+import { superUserRequired } from "../middlewares/superuserValidator.middleware.js";
+import { authRequired } from "../middlewares/tokenValidator.middleware.js";
 import {
   createCategory,
   deleteCategory,
@@ -82,7 +80,7 @@ router.get("/category/:id", getPostsByCategory);
  *    tags: [Categories]
  *    security:
  *      - bearerAuth: []
- *        superuser: true  
+ *        superuser: true
  *    requestBody:
  *      required: true
  *      content:
@@ -129,8 +127,8 @@ router.post(
  *        description: The category was deleted
  *      404:
  *        description: The category was not found
- *      
- *  
+ *
+ *
  */
 router.delete("/category/:id", authRequired, superUserRequired, deleteCategory);
 
@@ -169,7 +167,6 @@ router.delete("/category/:id", authRequired, superUserRequired, deleteCategory);
  *        description: some error server.
  *
  */
-
 
 router.put("/category/:id", authRequired, superUserRequired, updateCategory);
 

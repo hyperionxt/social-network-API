@@ -77,7 +77,7 @@ router.get("/suscriptions", authRequired, getSuscriptions);
  * /api/suscription:
  *  post:
  *    summary: Create a new subscription
- *    tags: [Subscriptions]
+ *    tags: [Suscriptions]
  *    security:
  *      - bearerAuth: []
  *    parameters:
@@ -119,11 +119,10 @@ router.post(
  * @swagger
  * /api/suscription/{id}:
  *  delete:
- *    summary: delete suscription(Superuser and suscription's owner only)
+ *    summary: delete suscription
  *    tags: [Suscriptions]
  *    security:
  *      - bearerAuth: []
- *      - superuser: true
  *      - ownerAuth: []
  *    parameters:
  *      - in: path

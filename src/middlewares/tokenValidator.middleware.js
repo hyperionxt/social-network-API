@@ -16,10 +16,17 @@ export const authRequired = (req, res, next) => {
   }
 };
 
-export const superUserRequired = (req, res, next) => {
-  if (req.user.superuser == false)
-    return res
-      .status(401)
-      .json({ message: "not authorized, you are not superuser" });
-  next();
+export const passwordTokenRequired = (req, res, next) => {
+  const { id, token } = req.params;
+  if (!token) {
+    return res.status(401).json({ message: "no password reset token, you cant reset your password" });
+  } else {
+    jwt.verify(token, JWT_SECRET_KEY, (err, userDecoded) => {
+      if (err)
+        return res.status(401).json({ message: "password token invalid, unauthorized" });
+      console.log("password reset token approved");
+      req.user = userDecoded;
+      next();
+    });
+  }
 };

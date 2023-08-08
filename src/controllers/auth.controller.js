@@ -1,7 +1,9 @@
-import { createAccessToken } from "../libs/jwt.js";
+import { createAccessToken, createPasswordToken } from "../libs/jwt.js";
+import { USER, PASSWORD } from "../config.js";
 import User from "../models/user.model.js";
 //to encrypt the password
 import bcryptjs from "bcryptjs";
+import nodemailer from "nodemailer";
 
 export const signUp = async (req, res) => {
   try {
@@ -118,5 +120,63 @@ export const updateProfile = async (req, res) => {
     }
   } catch (error) {
     return res.status(404).json({ message: error.message });
+  }
+};
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const userFound = await User.findOne({ email });
+    if (!userFound) return res.status(404).json({ message: "User not found" });
+
+    const token = await createPasswordToken({
+      email: userFound.email,
+      id: userFound._id,
+    });
+    const url = `http://localhost:3000/api/reset-password/${userFound._id}/${token}`;
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: USER,
+        pass: PASSWORD,
+      },
+    });
+
+    var mailOptions = {
+      from: USER,
+      to: email,
+      subject: "Reset password request",
+      text: url,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
+    return res.json({ message: "Password reset link sent" });
+  } catch (error) {
+    return res.status(404).json({ message: error.message });
+  }
+};
+
+export const newPassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+    const userFound = await User.findById(id);
+    if (!userFound) return res.status(404).json({ message: "User not found" });
+    const passHash = await bcryptjs.hash(password, 10);
+    await User.updateOne({ id: id }, { $set: { password: passHash } });
+    res.json({
+      id: userFound._id,
+      username: userFound.username,
+      email: userFound.email,
+    })
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (err) {
+    return res.status(404).json({ message: err.message });
   }
 };

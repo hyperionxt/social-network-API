@@ -4,7 +4,7 @@ const userSchema = mongoose.Schema(
   {
     username: {
       type: String,
-      required: true,
+      required: false,
       unique: true,
       trim: true, //no spaces.
     },
@@ -13,21 +13,29 @@ const userSchema = mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
+      lowercase: true,
     },
     password: {
       type: String,
-      required: true,
       trim: true,
+      required: function () {
+        return !this.googleId;
+      },
     },
     description: {
       type: String,
       required: false,
       default: "",
     },
-    superuser:{
+    superuser: {
       type: Boolean,
       default: false,
-    }
+    },
+    googleId: {
+      type: String,
+      default: "",
+      unique:true,
+    },
   },
   {
     timestamps: true,

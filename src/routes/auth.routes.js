@@ -1,13 +1,21 @@
 import { Router } from "express";
 import { schemaValidator } from "../middlewares/schemaValidator.middleware.js";
-import { authRequired } from "../middlewares/tokenValidator.middleware.js";
-import {signupSchema, signinSchema} from "../schemas/auth.schema.js";
-import { signIn, signUp, signOut, profile, updateProfile} from "../controllers/auth.controller.js";
-
-
+import {
+  authRequired,
+  passwordTokenRequired,
+} from "../middlewares/tokenValidator.middleware.js";
+import { signupSchema, signinSchema } from "../schemas/auth.schema.js";
+import {
+  signIn,
+  signUp,
+  signOut,
+  profile,
+  updateProfile,
+  forgotPassword,
+  newPassword,
+} from "../controllers/auth.controller.js";
 
 const router = Router();
-
 
 /**
  * @swagger
@@ -87,7 +95,6 @@ const router = Router();
  *  description: The suscription managing API
  */
 
-
 router.post("/signup", schemaValidator(signupSchema), signUp);
 
 /**
@@ -118,8 +125,7 @@ router.post("/signup", schemaValidator(signupSchema), signUp);
  *        description: Some server error
  */
 
-
-router.post("/signin", schemaValidator(signinSchema) ,signIn);
+router.post("/signin", schemaValidator(signinSchema), signIn);
 
 /**
  * @swagger
@@ -146,7 +152,7 @@ router.post("/signout", signOut);
  *      summary: Get a user profile by its id
  *      tags: [Users]
  *      security:
- *        - bearerAuth: []  
+ *        - bearerAuth: []
  *      responses:
  *        200:
  *          description: user information
@@ -160,8 +166,7 @@ router.post("/signout", signOut);
  *          description: User not found
  */
 
-
-router.get("/profile/:id", authRequired, profile)
+router.get("/profile/:id", authRequired, profile);
 
 /**
  * @swagger
@@ -202,8 +207,15 @@ router.get("/profile/:id", authRequired, profile)
  *
  */
 
+router.put("/profile/:id", authRequired, updateProfile);
 
-router.put("/profile/:id", authRequired, updateProfile)
+router.post("/forgot-password", authRequired, forgotPassword);
 
+router.post(
+  "/reset-password/:id/:token",
+  authRequired,
+  passwordTokenRequired,
+  newPassword
+);
 
 export default router;
