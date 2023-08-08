@@ -27,6 +27,14 @@ const postSchema = new mongoose.Schema(
       ref: "Community",
       required: true,
     },
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment",
+        required: false,
+      },
+    ],
+
     edited: {
       type: Boolean,
       default: false,

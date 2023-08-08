@@ -5,20 +5,20 @@ import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import authRoute from "./routes/auth.routes.js";
 import postRoute from "./routes/post.routes.js";
-import commRoute from "./routes/comm.routes.js";
+import communityRoute from "./routes/comm.routes.js";
+import commentRoute from "./routes/comment.routes.js";
 import categoryRoute from "./routes/category.routes.js";
 import suscRoute from "./routes/suscription.routes.js";
 import { swaggerServe, swaggerSetup } from "./swagger.js";
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
-    user: 'youremail@gmail.com',
-    pass: 'yourpassword'
-  }
+    user: "youremail@gmail.com",
+    pass: "yourpassword",
+  },
 });
-
 
 const limiter = rateLimit({
   max: 5,
@@ -36,9 +36,10 @@ app.use(cookieParser());
 //routes
 app.use("/api", authRoute);
 app.use("/api", postRoute);
-app.use("/api", commRoute);
+app.use("/api", communityRoute);
 app.use("/api", categoryRoute);
 app.use("/api", suscRoute);
+app.use("/api", commentRoute);
 
 //if route is not found, send 404 response
 app.use((req, res) => {

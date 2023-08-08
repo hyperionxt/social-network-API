@@ -1,23 +1,21 @@
 import mongoose from "mongoose";
 
-const suscriptionSchema = new mongoose.Schema(
+const commentSchema = new mongoose.Schema(
   {
+    text: {
+      type: String,
+      required: true,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
     community: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Community",
-      required: true,
     },
-    edited: {
-      type: Boolean,
-      default: false,
-    }
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Suscription", suscriptionSchema);
+export default mongoose.model("Comment", commentSchema);
