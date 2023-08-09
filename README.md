@@ -66,10 +66,12 @@
 
 1. install mongodb from the official page(in case you went local)
 
-2. type `` npm i `` from the root path to get all dependencies from packge.json:  
+ 1.5. otherwise go to src/db.js and modify the mongodb connection to work  with mognodb Atlas 
+
+3. type `` npm i `` from the root path to get all dependencies from packge.json:  
  
 
-3. enviroments variables
+4. enviroments variables
 
       create a .env file in the root path and inside define 4 variables:
       
@@ -78,7 +80,7 @@
         USER = the email manager for nodemailer(this email is gonna send a link to users to recover their passwords)  
         PASSWORD = app password by google(must to be from the same previous email)  
 
-4. type ``npm run dev`` to run the backend.
+5. type ``npm run dev`` to run the backend.
 
 
 note: endpoints were tested with [Thunder Client VSC](https://www.thunderclient.com/) extension
