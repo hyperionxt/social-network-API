@@ -1,62 +1,59 @@
 Description:
 
-This social network API was made in nodejs with express and mongodb and has the following functions:
-
-
-CRUD system.
-Upload files(.jgp, .png).
-JWT authentication.
-JWT recovery password.
-Schemas validators.
-Filter posts and communties by categories.
-Endpoints documentation by Swagger.
-Client side can implement login by google, the user model is ready for that.
-Endpoints are modularized for reuse in other projects.
+CRUD system.  
+Upload files(.jgp, .png).  
+JWT authentication.  
+JWT recovery password.  
+Schemas validators.  
+Filter posts and communties by categories.  
+Endpoints documentation by Swagger.  
+Client side can implement login by google, the user model is ready for that.  
+Endpoints are modularized for reuse in other projects.  
 
 
 More details:
 
 Authentication:
 
-users can register, login and logout
-users can be superuser or not
-users can update their profile(description, password, email)
-users can ask a request to recover their password if they forgot it.
-users can upload an image as pfp.
+users can register, login and logout  
+users can be superuser or not  
+users can update their profile(description, password, email)  
+users can ask a request to recover their password if they forgot it.  
+users can upload an image as pfp.  
 
 
 Posts:
 
-you can get all posts as a home page.
-posts are classified by categories.
-users can create, delete and update their posts.
+you can get all posts as a home page.  
+posts are classified by categories.  
+users can create, delete and update their posts.  
 
 Communties:
 
-users can create, delete and update their communties.
-communities are classified by categories.
+users can create, delete and update their communties.  
+communities are classified by categories.  
 
 Categories:
 
-only superusers are allowed to create, delete, and update categories.
+only superusers are allowed to create, delete, and update categories.  
 
 Suscriptions:
 
-users can subscribe to communties.
-users can get all their suscriptions
+users can subscribe to communties.  
+users can get all their suscriptions  
 
 Comments:
 
-users can create, delete and update their comments.
-users can reply comments.
+users can create, delete and update their comments.  
+users can reply comments.  
 
 Superusers:
 
-superusers have all permissions.
+superusers have all permissions.  
 
 Swagger Documentation:
 
-Version 1 are available at http://localhost:<your-port>/api/docs
+Version 1 are available at http://localhost:<your-port>/api/docs  
 
 
 installation
