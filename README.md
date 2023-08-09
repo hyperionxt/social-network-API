@@ -1,4 +1,4 @@
-# Description:
+# Features:
 
 * CRUD system.  
 * Upload files(.jgp, .png).  
@@ -24,7 +24,7 @@
 
 ### JWT:
 
-* there are endoints protected by tokens authentication.  
+* there are endoints protected by tokens authentication middlewares  
 * to recover a forgot password, a token will be generated in the url and send the url to the email user. this token will be validated.  
 
 
@@ -59,19 +59,19 @@
 
 ### Swagger endpoints Ddocumentation:
 
-* available at http://localhost:{your-backend-port}/api/docs  
+* available at http://{url-server-backend}:{your-backend-port}/api/docs  
 
 
 ## How to install
 
-1. install mongodb from the official page(in case you went local)
+1. install mongodb from the official page(in case you are in local mode)
 
- 1.5. otherwise go to src/db.js and modify the mongodb connection to work  with mognodb Atlas 
+   * otherwise go to src/db.js and modify the mongodb connection to work  with mognodb Atlas 
 
-3. type `` npm i `` from the root path to get all dependencies from packge.json:  
+2. type ``$ npm i `` from the root path to get all dependencies from packge.json:  
  
 
-4. enviroments variables
+3. enviroments variables
 
       create a .env file in the root path and inside define 4 variables:
       
@@ -80,7 +80,7 @@
         USER = the email manager for nodemailer(this email is gonna send a link to users to recover their passwords)  
         PASSWORD = app password by google(must to be from the same previous email)  
 
-5. type ``npm run dev`` to run the backend.
+4. type ``$ npm run dev`` to run the backend.
 
 
 note: endpoints were tested with [Thunder Client VSC](https://www.thunderclient.com/) extension
