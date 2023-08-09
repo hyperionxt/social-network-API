@@ -64,7 +64,7 @@
 
 ## How to install
 
-1. install [mongodb compass](https://www.mongodb.com/try/download/compass) from the official page(in case you are in local mode)
+1. install [Mongodb Compass](https://www.mongodb.com/try/download/compass) from the official page(in case you are in local mode)
 
    * otherwise go to src/db.js and modify the mongodb connection to work  with mognodb Atlas 
 
