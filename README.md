@@ -64,9 +64,9 @@
 
 ## How to install
 
-1. install [Mongodb Compass](https://www.mongodb.com/try/download/compass) from the official page(in case you are in local mode)
+1. install [MongoDB Compass](https://www.mongodb.com/try/download/compass) from the official page(in case you are in local mode)
 
-   * otherwise go to src/db.js and modify the mongodb connection to work  with mognodb Atlas 
+   * otherwise go to src/db.js and modify the mongodb connection to work  with [MongoDB Atlas](https://www.mongodb.com/atlas/database) 
 
 2. type ``$ npm i `` from the root path to get all dependencies from packge.json:  
  
