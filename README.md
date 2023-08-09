@@ -70,10 +70,10 @@ installation
 
   create a .env file in the root path and inside define 4 variables:
   
-  PORT = your port backend server(in case you are in local mode)
-  SECRET_KEY = secret key token creation for JWT, authentication and recovery password token middlewares.
-  USER = the email manager for nodemailer(this email is gonna send a link to users to recover their passwords)
-  PASSWORD = app password by google(must to be from the same previous email)
+  PORT = your port backend server(in case you are in local mode)  
+  SECRET_KEY = secret key token creation for JWT, authentication and recovery password token middlewares.  
+  USER = the email manager for nodemailer(this email is gonna send a link to users to recover their passwords)  
+  PASSWORD = app password by google(must to be from the same previous email)  
 
 4. type npm run dev to run the backend.
 
