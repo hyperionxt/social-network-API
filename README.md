@@ -25,7 +25,7 @@
 ### JWT:
 
 * there are endoints protected by tokens authentication middlewares  
-* to recover a forgot password, a token will be generated in the url and send the url to the email user. this token will be validated.  
+* forgot password stuff(url token will be generated in the url, send it to the email user and this token will be validated)  
 
 
 ### Posts:
