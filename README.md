@@ -57,7 +57,7 @@
 
 * superusers have all permissions.  
 
-### Swagger endpoints Ddocumentation:
+### Swagger endpoints documentation:
 
 * available at http://{url-server-backend}:{your-backend-port}/api/docs  
 
