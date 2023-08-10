@@ -1,7 +1,7 @@
 # Features:
 
 * CRUD system.  
-* Upload files(.jgp, .jpeg and .png).  
+* Upload files(.jgp, .jpeg and .png). (working on it)  
 * JWT authentication.  
 * JWT recovery password.  
 * Schemas validator.  
