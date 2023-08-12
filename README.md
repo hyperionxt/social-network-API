@@ -1,7 +1,7 @@
 # Features:
 
 * CRUD system.  
-* Cloud image upload(Cloudinary service). 
+* Cloud image upload-update-delete with Cloudinary service. 
 * JWT authentication.  
 * JWT recovery password.  
 * Schemas validator.  
@@ -18,9 +18,9 @@
 ### Users:
 
  * users can register, login and logout  
- * users can be superuser or not  
- * users can update their profile(description, password, email)  
+ * users can be superuser or not
  * users can upload an image as pfp.
+ * users can update their profile(description, password, email, image)  
  * users can ask a recover password request.
 
 ### JWT:
