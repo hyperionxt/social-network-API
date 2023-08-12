@@ -12,14 +12,8 @@
 * Everything is modularized for re-use in other projects.
 * MongoDB Atlas.
 
-<<<<<<< HEAD
-note: code in ES6
-=======
 ### Developing:
 * Updating and adding new Swagger doc
-* MongoDB Atlas config
->>>>>>> 1472ad0e99365b54518650bdf1ab0d85325e54e6
-
 
 ## More details:
 
