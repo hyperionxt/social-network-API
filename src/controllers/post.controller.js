@@ -1,4 +1,5 @@
 import Post from "../models/post.model.js";
+import { deleteImage, uploadImage } from "../utils/cloudinary.js";
 
 export const getPosts = async (req, res) => {
   try {
@@ -29,6 +30,16 @@ export const createPost = async (req, res) => {
       category,
       community,
     });
+
+    if (req.files?.image) {
+      const result = await uploadImage(req.files.image.tempFilePath);
+      newPost.image = {
+        public_id: result.public_id,
+        secure_url: result.secure_url,
+      };
+
+      await fs.unlinkSync(req.files.image.tempFilePath);
+    }
     await newPost.save();
     res.json(newPost);
   } catch (err) {
@@ -41,18 +52,20 @@ export const deletePost = async (req, res) => {
     if (req.user.superuser == true) {
       const post = await Post.findByIdAndDelete(req.params.id);
 
-      if (!post)
-        return res.status(404).json({ message: "post not found" });
-      console.log("post updated successfully by superuser");
-
+      if (!post) return res.status(404).json({ message: "post not found" });
+      if (post.image?.public_id) {
+        await deleteImage(post.image.public_id);
+      }
       res.status(204).json({ message: "post deleted successfully" });
     } else {
       const post = await Post.findOneAndDelete({
         _id: req.params.id,
         user: req.user.id,
       });
-      if (!post)
-        return res.status(404).json({ message: "post not found" });
+      if (!post) return res.status(404).json({ message: "post not found" });
+      if (post.image?.public_id) {
+        await deleteImage(post.image.public_id);
+      }
       res.status(204).json({ message: "post deleted successfully" });
     }
   } catch (err) {
@@ -62,6 +75,7 @@ export const deletePost = async (req, res) => {
 
 export const updatePost = async (req, res) => {
   try {
+    //superuser can change everything
     if (req.user.superuser == true) {
       const post = await Post.findByIdAndUpdate(
         req.params.id,
@@ -73,6 +87,7 @@ export const updatePost = async (req, res) => {
       console.log("post updated successfully by superuser");
       res.json(post);
     } else {
+      //object's author only can update title, description and images.
       const post = await Post.findOneAndUpdate(
         { _id: req.params.id, user: req.user.id },
         {
@@ -85,8 +100,18 @@ export const updatePost = async (req, res) => {
         { new: true }
       );
 
-      if (!post)
-        return res.status(404).json({ message: "post not found" });
+      if (!post) return res.status(404).json({ message: "post not found" });
+      if (req.files?.image) {
+        if (post.image?.public_id) {
+          await deleteImage(post.image.public_id);
+        }
+        const result = await uploadImage(req.files.image.tempFilePath);
+        post.image = {
+          public_id: result.public_id,
+          secure_url: result.secure_url,
+        };
+        await fs.unlinkSync(req.files.image.tempFilePath);
+      }
       console.log("post updated successfully by its author");
       res.json({
         title: post.title,

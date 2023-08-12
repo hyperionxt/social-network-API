@@ -28,7 +28,7 @@ export function createPasswordToken(payload) {
       payload,
       JWT_SECRET_KEY,
       {
-        expiresIn: "5m",
+        expiresIn: "10m",
       },
       (err, token) => {
         if (err) {

@@ -208,6 +208,6 @@ router.delete("/post/:id", authRequired, deletePost);
  *        description: some error server.
  *
  */
-router.put("/post/:id", authRequired, updatePost);
+router.put("/post/:id/", authRequired, updatePost);
 
 export default router;

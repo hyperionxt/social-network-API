@@ -8,7 +8,6 @@ const communitySchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: true,
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -22,17 +21,13 @@ const communitySchema = new mongoose.Schema(
         required: true,
       },
     ],
-    comments: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Comment",
-        required: false,
-        default: [],
-      },
-    ],
     edited: {
       type: Boolean,
       default: false,
+    },
+    image: {
+      public_id: String,
+      secure_url: String,
     },
   },
   { timestamps: true }

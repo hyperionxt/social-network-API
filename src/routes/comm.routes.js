@@ -9,9 +9,9 @@ import {
 } from "../controllers/comm.controller.js";
 import { schemaValidator } from "../middlewares/schemaValidator.middleware.js";
 import { createCommunitySchema } from "../schemas/community.schema.js";
+import { fileUploadCloudinary } from "../middlewares/fileUpload.middleware.js";
 
 const router = Router();
-
 
 /**
  * @swagger
@@ -87,7 +87,6 @@ const router = Router();
 
 router.get("/communities", getCommunities);
 
-
 /**
  * @swagger
  * /api/community/{id}:
@@ -143,10 +142,10 @@ router.get("/community/:id", getCommunity);
  *        description: Some server error
  */
 
-
 router.post(
   "/community",
   authRequired,
+  fileUploadCloudinary,
   schemaValidator(createCommunitySchema),
   createCommunity
 );
@@ -175,10 +174,9 @@ router.post(
  *        description: unauthorized.
  *      404:
  *        description: The community was not found
- *      
- *  
+ *
+ *
  */
-
 
 router.delete("/community/:id", authRequired, deleteCommunity);
 
@@ -221,7 +219,11 @@ router.delete("/community/:id", authRequired, deleteCommunity);
  *
  */
 
-
-router.put("/community/:id", authRequired, updateCommunity);
+router.put(
+  "/community/:id",
+  authRequired,
+  fileUploadCloudinary,
+  updateCommunity
+);
 
 export default router;

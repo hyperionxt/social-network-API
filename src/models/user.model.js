@@ -34,7 +34,11 @@ const userSchema = mongoose.Schema(
     googleId: {
       type: String,
       default: "",
-      unique:true,
+      unique: true,
+    },
+    image: {
+      public_id: String,
+      secure_url: String,
     },
   },
   {

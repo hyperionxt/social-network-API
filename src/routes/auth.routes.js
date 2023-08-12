@@ -14,6 +14,7 @@ import {
   forgotPassword,
   newPassword,
 } from "../controllers/auth.controller.js";
+import { fileUploadCloudinary } from "../middlewares/fileUpload.middleware.js";
 
 const router = Router();
 
@@ -95,7 +96,12 @@ const router = Router();
  *  description: The suscription managing API
  */
 
-router.post("/signup", schemaValidator(signupSchema), signUp);
+router.post(
+  "/signup",
+  fileUploadCloudinary,
+  schemaValidator(signupSchema),
+  signUp
+);
 
 /**
  * @swagger
@@ -207,7 +213,7 @@ router.get("/profile/:id", authRequired, profile);
  *
  */
 
-router.put("/profile/:id", authRequired, updateProfile);
+router.put("/profile/:id", authRequired, fileUploadCloudinary, updateProfile);
 
 router.post("/forgot-password", authRequired, forgotPassword);
 

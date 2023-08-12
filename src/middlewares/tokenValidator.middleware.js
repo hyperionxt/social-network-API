@@ -17,13 +17,19 @@ export const authRequired = (req, res, next) => {
 };
 
 export const passwordTokenRequired = (req, res, next) => {
-  const { id, token } = req.params;
+  const { token } = req.params.token;
   if (!token) {
-    return res.status(401).json({ message: "no password reset token, you cant reset your password" });
+    return res
+      .status(401)
+      .json({
+        message: "no password reset token, you cant reset your password",
+      });
   } else {
     jwt.verify(token, JWT_SECRET_KEY, (err, userDecoded) => {
       if (err)
-        return res.status(401).json({ message: "password token invalid, unauthorized" });
+        return res
+          .status(401)
+          .json({ message: "password token invalid, unauthorized" });
       console.log("password reset token approved");
       req.user = userDecoded;
       next();

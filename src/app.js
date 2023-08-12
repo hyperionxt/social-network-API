@@ -9,19 +9,10 @@ import communityRoute from "./routes/comm.routes.js";
 import commentRoute from "./routes/comment.routes.js";
 import categoryRoute from "./routes/category.routes.js";
 import suscRoute from "./routes/suscription.routes.js";
-import { swaggerServe, swaggerSetup } from "./swagger.js";
-import nodemailer from "nodemailer";
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "youremail@gmail.com",
-    pass: "yourpassword",
-  },
-});
+import { swaggerServe, swaggerSetup } from "./utils/swagger.js";
 
 const limiter = rateLimit({
-  max: 5,
+  max: 10,
   windowMs: 10000,
 });
 
@@ -41,7 +32,7 @@ app.use("/api", categoryRoute);
 app.use("/api", suscRoute);
 app.use("/api", commentRoute);
 
-//if route is not found, send 404 response
+//if route is not found, send 404 status.
 app.use((req, res) => {
   res.status(404).json({ message: "page not found" });
 });

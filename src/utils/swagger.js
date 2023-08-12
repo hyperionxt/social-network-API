@@ -5,9 +5,9 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Blog API",
+      title: "social network API",
       version: "1.0.0",
-      description: "A simple Express blog API with communities that contains post and users can subcribes to the communities that they want.",
+      description: "A simple social network API made by nodejs-express and mongoDB with communities that contains post and users can subcribes to the communities.",
     },
     servers: [
       {

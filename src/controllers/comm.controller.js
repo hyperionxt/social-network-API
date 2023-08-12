@@ -1,4 +1,6 @@
 import Community from "../models/community.model.js";
+import fs from "fs-extra";
+import { uploadImage, deleteImage } from "../utils/cloudinary.js";
 
 export const getCommunities = async (req, res) => {
   try {
@@ -27,6 +29,16 @@ export const createCommunity = async (req, res) => {
       category,
       user: req.user.id,
     });
+
+    if (req.files?.image) {
+      const result = await uploadImage(req.files.image.tempFilePath);
+      newCommunity.image = {
+        public_id: result.public_id,
+        secure_url: result.secure_url,
+      };
+
+      await fs.unlinkSync(req.files.image.tempFilePath);
+    }
     await newCommunity.save();
     res.json(newCommunity);
   } catch (err) {
@@ -41,9 +53,11 @@ export const deleteCommunity = async (req, res) => {
 
       if (!community)
         return res.status(404).json({ message: "community not found" });
-      console.log("community updated successfully by superuser");
 
-      res.status(204).json({ message: "Task deleted successfully" });
+      if (community.image?.public_id) {
+        await deleteImage(community.image.public_id);
+      }
+      res.status(204).json({ message: "community deleted successfully" });
     } else {
       const community = await Community.findOneAndDelete({
         _id: req.params.id,
@@ -51,10 +65,13 @@ export const deleteCommunity = async (req, res) => {
       });
       if (!community)
         return res.status(404).json({ message: "community not found" });
+      if (community.image?.public_id) {
+        await deleteImage(community.image.public_id);
+      }
       res.status(204).json({ message: "community deleted successfully" });
     }
   } catch (err) {
-    return res.stauts(404).json({ message: err.message });
+    return res.status(404).json({ message: err.message });
   }
 };
 
@@ -69,7 +86,18 @@ export const updateCommunity = async (req, res) => {
       );
 
       if (!community)
-        return res.status(404).json({ message: "community not found" });
+        return res.status(500).json({ message: "community not found" });
+      if (req.files?.image) {
+        if (community.image?.public_id) {
+          await deleteImage(community.image.public_id);
+        }
+        const result = await uploadImage(req.files.image.tempFilePath);
+        community.image = {
+          public_id: result.public_id,
+          secure_url: result.secure_url,
+        };
+        await fs.unlinkSync(req.files.image.tempFilePath);
+      }
       console.log("community updated successfully by superuser");
       res.json(community);
     } else {

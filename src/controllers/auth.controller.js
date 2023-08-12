@@ -4,6 +4,8 @@ import User from "../models/user.model.js";
 //to encrypt the password
 import bcryptjs from "bcryptjs";
 import nodemailer from "nodemailer";
+import { uploadImage, deleteImage } from "../utils/cloudinary.js";
+import fs from "fs-extra";
 
 export const signUp = async (req, res) => {
   try {
@@ -26,6 +28,16 @@ export const signUp = async (req, res) => {
       username,
     });
 
+    if (req.files?.image) {
+      const result = await uploadImage(req.files.image.tempFilePath);
+      newUser.image = {
+        public_id: result.public_id,
+        secure_url: result.secure_url,
+      };
+      //delete temp files
+      await fs.unlinkSync(req.files.image.tempFilePath);
+    }
+
     const userCreated = await newUser.save();
     const token = await createAccessToken({
       id: userCreated._id,
@@ -38,8 +50,10 @@ export const signUp = async (req, res) => {
       id: userCreated._id,
       username: userCreated.username,
       email: userCreated.email,
+      image: userCreated.image,
       createdAt: userCreated.createdAt,
     });
+
     console.log("new user created successfully");
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -91,6 +105,7 @@ export const profile = async (req, res) => {
     createdAt: userFound.createdAt,
     description: userFound.description,
     password: userFound.password,
+    image: userFound.image,
   });
 };
 
@@ -101,20 +116,36 @@ export const updateProfile = async (req, res) => {
         message: "Unauthorized. You can only modify your own profile.",
       });
     } else {
-      const { password, ...userData } = req.body;
+      const { password, username, email, description } = req.body;
+      const userData = {};
 
       if (password) {
         const hashedPassword = await bcryptjs.hash(password, 10);
         userData.password = hashedPassword;
       }
+      if (email) userData.email = email;
+
+      if (description) userData.description = description;
+
+      if (username) userData.username = username;
 
       const userFound = await User.findByIdAndUpdate(req.params.id, userData, {
         new: true,
       });
 
       if (!userFound)
-        return res.status(404).json({ message: "User not found" });
-
+        return res.status(500).json({ message: "User not found" });
+      if (req.files?.image) {
+        if (userFound.image?.public_id) {
+          await deleteImage(userFound.image.public_id);
+        }
+        const result = await uploadImage(req.files.image.tempFilePath);
+        userFound.image = {
+          public_id: result.public_id,
+          secure_url: result.secure_url,
+        };
+        await fs.unlinkSync(req.files.image.tempFilePath);
+      }
       res.json(userFound);
       console.log("Profile updated successfully");
     }
@@ -156,7 +187,10 @@ export const forgotPassword = async (req, res) => {
         console.log("Email sent: " + info.response);
       }
     });
-    return res.json({ message: "Password reset link sent" });
+    return res.json({
+      message:
+        "You recieved a link to reset your password in your email, this link will expire in 10 minutes",
+    });
   } catch (error) {
     return res.status(404).json({ message: error.message });
   }
