@@ -1,6 +1,5 @@
 import { JWT_SECRET_KEY } from "../config.js";
 import jwt from "jsonwebtoken";
-//Payload is the data saved in the token.
 
 export function createAccessToken(payload) {
   return new Promise((resolve, reject) => {

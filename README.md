@@ -10,7 +10,9 @@
 * Endpoints documentation by Swagger.  (updating and adding new doc)
 * Client side can implement login by google, the user model is ready for that.  
 * Everything is modularized for re-use in other projects.
-* MongoDB Atlas. (working on it)  
+* MongoDB Atlas.
+
+note: code in ES6
 
 
 ## More details:
@@ -25,19 +27,21 @@
 
 ### JWT:
 
-* there are endoints protected by tokens authentication middlewares  
-* forgot password stuff(url token will be generated in the url, send it to the email user and this token will be validated)  
+* there are endoints protected by tokens authentication middlewares,  
+* forgot password request token creation, 
 
 
 ### Posts:
 
 * you can get all posts as a home page.  
 * posts are classified by categories.  
-* users can create, delete and update their posts.  
+* users can create, delete and update their posts.
+* user can upload, delete or update image files in their posts.  
 
 ### Communties:
 
-* users can create, delete and update their communties.  
+* users can create, delete and update their communties.
+* users can upload a community image.  
 * communities are classified by categories.  
 
 ### Categories:
@@ -51,7 +55,8 @@
 
 ### Comments:
 
-* users can create, delete and update their comments.  
+* users can create, delete and update their comments.
+* user can upload images.  
 * users can reply comments.  
 
 ### Superusers:
@@ -60,31 +65,31 @@
 
 ### Swagger endpoints documentation:
 
-* available at http://{url-server-backend}:{your-backend-port}/api/docs  
+* available at http://localhost:{your-backend-port}/api/docs  
 
 
 ## How to install
 
-1. install [MongoDB Compass](https://www.mongodb.com/try/download/compass) from the official page(in case you are in local mode)
+1. Create a cluster in your [MongoDb Atlas](https://www.mongodb.com/atlas/database) project.
 
-   * otherwise go to src/db.js and modify the mongodb connection to work  with [MongoDB Atlas](https://www.mongodb.com/atlas/database) 
 
-2. type ``$ npm i `` from the root path to get all dependencies from packge.json:  
+2. Type ``$ npm i `` in root path to get all dependencies from packge.json.
  
 
-3. enviroments variables
+3. Enviroments variables
 
-      create a .env file in the root path and inside define 4 variables:
+      create a .env file in the root path and inside define 8 variables:
       
-        PORT = your port backend server(in case you are in local mode)  
-        SECRET_KEY = secret key token creation for JWT, authentication and recovery password token middlewares.  
+        PORT = your port backend server.
+        MONGODB_URI = your mongodb atlas connection string(remember tu put your password user inside of this string)
+        SECRET_KEY = secret key token for JWT middleware.  
         USER = the email manager for nodemailer(this email is gonna send a link to users to recover their passwords)  
         PASSWORD = app password by google(must to be from the same previous email)
         CLOUD_NAME = from cloudinary
         API_KEY = from cloudinary
         API_SECRET = from cloudinary  
 
-5. type ``$ npm run dev`` to run the backend.
+5. Type ``$ npm run dev`` in root path to run the backend.
 
 
 note: endpoints were tested with [Thunder Client VSC](https://www.thunderclient.com/) extension

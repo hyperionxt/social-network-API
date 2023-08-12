@@ -1,7 +1,8 @@
 import { config } from "dotenv";
 config();
-//PORT BACKEND SERVER
 export const PORT = process.env.PORT;
+//MONGODB CONNECTION STRING
+export const MONGODB_URI = process.env.MONGODB_URI;
 //SECRET KEY JWT
 export const JWT_SECRET_KEY = process.env.SECRET_KEY;
 //NODEMAILER
