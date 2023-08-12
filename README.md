@@ -1,15 +1,16 @@
 # Features:
 
 * CRUD system.  
-* Upload files(.jgp, .jpeg and .png). (working on it)  
+* Cloud image upload-update-delete with Cloudinary service. 
 * JWT authentication.  
 * JWT recovery password.  
 * Schemas validator.  
 * Superuser implementation(roles)  
 * Filter posts and communties by categories.  
-* Endpoints documentation by Swagger.  
+* Endpoints documentation by Swagger.  (updating and adding new doc)
 * Client side can implement login by google, the user model is ready for that.  
-* Everything is modularized for re-use in other projects.  
+* Everything is modularized for re-use in other projects.
+* MongoDB Atlas. (working on it)  
 
 
 ## More details:
@@ -17,9 +18,9 @@
 ### Users:
 
  * users can register, login and logout  
- * users can be superuser or not  
- * users can update their profile(description, password, email)  
+ * users can be superuser or not
  * users can upload an image as pfp.
+ * users can update their profile(description, password, email, image)  
  * users can ask a recover password request.
 
 ### JWT:
@@ -78,9 +79,12 @@
         PORT = your port backend server(in case you are in local mode)  
         SECRET_KEY = secret key token creation for JWT, authentication and recovery password token middlewares.  
         USER = the email manager for nodemailer(this email is gonna send a link to users to recover their passwords)  
-        PASSWORD = app password by google(must to be from the same previous email)  
+        PASSWORD = app password by google(must to be from the same previous email)
+        CLOUD_NAME = from cloudinary
+        API_KEY = from cloudinary
+        API_SECRET = from cloudinary  
 
-4. type ``$ npm run dev`` to run the backend.
+5. type ``$ npm run dev`` to run the backend.
 
 
 note: endpoints were tested with [Thunder Client VSC](https://www.thunderclient.com/) extension
