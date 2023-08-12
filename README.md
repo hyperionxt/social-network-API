@@ -70,13 +70,13 @@
 
 ## How to install
 
-1. Create a cluster in your [MongoDb Atlas](https://www.mongodb.com/atlas/database) project.
+1. Type ``$ npm i `` in root path to get all dependencies from packge.json.
 
+2. Create a cluster in your [MongoDB Atlas](https://www.mongodb.com/atlas/database) project.
+  
+3. Create an account in [Cloudinary](https://cloudinary.com/) service.
 
-2. Type ``$ npm i `` in root path to get all dependencies from packge.json.
- 
-
-3. Enviroments variables
+4. Enviroments variables
 
       create a .env file in the root path and inside define 8 variables:
       
