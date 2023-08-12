@@ -7,10 +7,14 @@
 * Schemas validator.  
 * Superuser implementation(roles)  
 * Filter posts and communties by categories.  
-* Endpoints documentation by Swagger.  (updating and adding new doc)
+* Endpoints documentation by Swagger.  
 * Client side can implement login by google, the user model is ready for that.  
 * Everything is modularized for re-use in other projects.
-* MongoDB Atlas. (working on it)  
+* MongoDB Atlas.
+
+### Developing:
+* Updating and adding new Swagger doc
+* MongoDB Atlas config
 
 
 ## More details:
