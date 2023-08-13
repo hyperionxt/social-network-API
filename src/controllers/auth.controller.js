@@ -168,7 +168,7 @@ export const forgotPassword = async (req, res) => {
 
     const resend = new Resend(RESEND_API_KEY);
     await resend.emails.send({
-      from: 'Acme <onboarding@resend.dev>',
+      from: DOMAIN,
       to: email,
       subject: "recovery password request",
       text: url,
