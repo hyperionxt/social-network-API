@@ -7,5 +7,5 @@ app.listen(PORT);
 console.log(
   `>>>> Server running on port ${PORT}` +
     `\n` +
-    `Docs are available at http://localhost:${PORT}/api/docs`
+    `>>>> Docs are available at http://localhost:${PORT}/api/docs`
 );

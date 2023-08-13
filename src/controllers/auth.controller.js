@@ -1,11 +1,11 @@
 import { createAccessToken, createPasswordToken } from "../libs/jwt.js";
-import { USER, PASSWORD } from "../config.js";
+import { RESEND_API_KEY, DOMAIN } from "../config.js";
 import User from "../models/user.model.js";
 //to encrypt the password
 import bcryptjs from "bcryptjs";
-import nodemailer from "nodemailer";
 import { uploadImage, deleteImage } from "../utils/cloudinary.js";
 import fs from "fs-extra";
+import { Resend } from "resend";
 
 export const signUp = async (req, res) => {
   try {
@@ -165,32 +165,15 @@ export const forgotPassword = async (req, res) => {
       id: userFound._id,
     });
     const url = `http://localhost:3000/api/reset-password/${userFound._id}/${token}`;
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: USER,
-        pass: PASSWORD,
-      },
-    });
 
-    var mailOptions = {
-      from: USER,
+    const resend = new Resend(RESEND_API_KEY);
+    await resend.emails.send({
+      from: 'Acme <onboarding@resend.dev>',
       to: email,
-      subject: "Reset password request",
+      subject: "recovery password request",
       text: url,
-    };
-
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
     });
-    return res.json({
-      message:
-        "You recieved a link to reset your password in your email, this link will expire in 10 minutes",
-    });
+    res.status(200).json({ message: "Email sent, please check your inbox" });
   } catch (error) {
     return res.status(404).json({ message: error.message });
   }
@@ -198,9 +181,8 @@ export const forgotPassword = async (req, res) => {
 
 export const newPassword = async (req, res) => {
   try {
-    const { id } = req.params;
     const { password } = req.body;
-    const userFound = await User.findById(id);
+    const userFound = await User.findById(req.params.id);
     if (!userFound) return res.status(404).json({ message: "User not found" });
     const passHash = await bcryptjs.hash(password, 10);
     await User.updateOne({ id: id }, { $set: { password: passHash } });

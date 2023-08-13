@@ -2,8 +2,8 @@
 
 * CRUD system.  
 * Cloud image upload-update-delete with Cloudinary service. 
-* JWT authentication.  
-* JWT recovery password.  
+* JWT.  
+* Resend service to ask recover password request.
 * Schemas validator.  
 * Superuser implementation(roles)  
 * Filter posts and communties by categories.  
@@ -70,26 +70,30 @@
 
 ## How to install
 
-1. Type ``$ npm i `` in root path to get all dependencies from packge.json.
+1. Type ``npm i `` in root path to get all dependencies from package.json.
 
 2. Create a cluster in your [MongoDB Atlas](https://www.mongodb.com/atlas/database) project.
   
 3. Create an account in [Cloudinary](https://cloudinary.com/) service.
 
+4. Create an account in [Resend](https://resend.com/home) service
+
+    import: you can only send testing emails to your own email address, you need to register a valid domain in this page to send to others email addresses.
+
 4. Enviroments variables
 
-      create a .env file in the root path and inside define 8 variables:
+      create a .env file in the root path and inside define 9 variables:
       
         PORT = your port backend server.
-        MONGODB_URI = your mongodb atlas connection string(remember tu put your password user inside of this string)
+        MONGODB_URI = your mongodb atlas connection string(remember replace your password user inside of this string)
         SECRET_KEY = secret key token for JWT middleware.  
-        USER = the email manager for nodemailer(this email is gonna send a link to users to recover their passwords)  
-        PASSWORD = app password by google(must to be from the same previous email)
-        CLOUD_NAME = from cloudinary
-        API_KEY = from cloudinary
-        API_SECRET = from cloudinary  
+        RESEND_API_KEY = API key from your Resend account  
+        DOMAIN = your registered domain.
+        CLOUD_NAME = from your cloudinary account.
+        API_KEY = from your cloudinary account.
+        API_SECRET = from your cloudinary account. 
 
-5. Type ``$ npm run dev`` in root path to run the backend.
+5. Type ``npm run dev`` in root path to run the backend.
 
 
 note: endpoints were tested with [Thunder Client VSC](https://www.thunderclient.com/) extension
