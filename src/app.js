@@ -1,6 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import helmet from "helmet";
+import cors from "cors";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import authRoute from "./routes/auth.routes.js";
@@ -17,8 +18,8 @@ const limiter = rateLimit({
 });
 
 const app = express();
+app.use(cors());
 app.use(helmet());
-app.use("/api/docs", swaggerServe, swaggerSetup);
 app.use(morgan("dev"));
 app.use(express.json());
 //To read cookies in console.
@@ -31,6 +32,9 @@ app.use("/api", communityRoute);
 app.use("/api", categoryRoute);
 app.use("/api", suscRoute);
 app.use("/api", commentRoute);
+
+//Swagger doc
+app.use("/api/docs", swaggerServe, swaggerSetup);
 
 //if route is not found, send 404 status.
 app.use((req, res) => {
