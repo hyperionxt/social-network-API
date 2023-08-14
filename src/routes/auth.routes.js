@@ -215,11 +215,10 @@ router.get("/profile/:id", authRequired, profile);
 
 router.put("/profile/:id", authRequired, fileUploadCloudinary, updateProfile);
 
-router.post("/forgot-password", authRequired, forgotPassword);
+router.post("/forgot-password", forgotPassword);
 
 router.post(
   "/reset-password/:id/:token",
-  authRequired,
   passwordTokenRequired,
   newPassword
 );

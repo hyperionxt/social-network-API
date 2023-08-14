@@ -16,8 +16,7 @@ export const signupSchema = z.object({
       required_error: "Password is required",
     })
     .min(8, {
-      message:
-        "Password must be at least 6 character",
+      message: "Password must be at least 6 character",
     }),
 });
 
@@ -29,12 +28,7 @@ export const signinSchema = z.object({
     .email({
       message: "Invalid email",
     }),
-  password: z
-    .string({
-      required_error: "Password is required",
-    })
-    .min(8, {
-      message:
-        "Password must be at least 8 character",
-    }),
+  password: z.string({
+    required_error: "Password is required",
+  }),
 });
