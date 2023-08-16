@@ -1,7 +1,7 @@
 import fileUpload from 'express-fileupload';
 
-export const fileUploadCloudinary = fileUpload({
+export const fileUploadMiddleware = fileUpload({
   useTempFiles: true,
-  tempFileDir: "./uploads",
+  tempFileDir: "./src/uploads",
 });
 

@@ -5,7 +5,7 @@ import { PORT } from "./config.js";
 connectDB();
 app.listen(PORT);
 console.log(
-  `>>>> Server running on port ${PORT}` +
+  `>>>> Server running on port ${PORT} (1/3)` +
     `\n` +
-    `>>>> Docs are available at http://localhost:${PORT}/api/docs`
+    `>>>> Docs are available at http://localhost:${PORT}/api/docs (2/3)`
 );

@@ -14,7 +14,7 @@ import {
   forgotPassword,
   newPassword,
 } from "../controllers/auth.controller.js";
-import { fileUploadCloudinary } from "../middlewares/fileUpload.middleware.js";
+import { fileUploadMiddleware } from "../middlewares/fileUpload.middleware.js";
 
 const router = Router();
 
@@ -98,7 +98,7 @@ const router = Router();
 
 router.post(
   "/signup",
-  fileUploadCloudinary,
+  fileUploadMiddleware,
   schemaValidator(signupSchema),
   signUp
 );
@@ -213,14 +213,10 @@ router.get("/profile/:id", authRequired, profile);
  *
  */
 
-router.put("/profile/:id", authRequired, fileUploadCloudinary, updateProfile);
+router.put("/profile/:id", authRequired, fileUploadMiddleware, updateProfile);
 
 router.post("/forgot-password", forgotPassword);
 
-router.post(
-  "/reset-password/:id/:token",
-  passwordTokenRequired,
-  newPassword
-);
+router.post("/reset-password/:id/:token", passwordTokenRequired, newPassword);
 
 export default router;

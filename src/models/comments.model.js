@@ -10,9 +10,9 @@ const commentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    community: {
+    post: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Community",
+      ref: "Post",
     },
     parentComment: {
       type: mongoose.Schema.Types.ObjectId,
