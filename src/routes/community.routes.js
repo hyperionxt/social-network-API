@@ -6,7 +6,7 @@ import {
   getCommunities,
   getCommunity,
   updateCommunity,
-} from "../controllers/comm.controller.js";
+} from "../controllers/community.controller.js";
 import { schemaValidator } from "../middlewares/schemaValidator.middleware.js";
 import { createCommunitySchema } from "../schemas/community.schema.js";
 import { fileUploadMiddleware } from "../middlewares/fileUpload.middleware.js";

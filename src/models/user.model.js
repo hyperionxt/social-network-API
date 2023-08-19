@@ -6,7 +6,7 @@ const userSchema = mongoose.Schema(
       type: String,
       required: false,
       unique: true,
-      trim: true, //no spaces.
+      trim: true,
     },
     email: {
       type: String,
@@ -31,10 +31,13 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    confirmed:{
+      type: Boolean,
+      default: false,
+    },
     googleId: {
       type: String,
-      default: "",
-      unique: true,
+      default: null,
     },
     image: {
       public_id: String,

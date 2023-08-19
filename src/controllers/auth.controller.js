@@ -135,7 +135,6 @@ export const myProfile = async (req, res) => {
       email: userFound.email,
       createdAt: userFound.createdAt,
       description: userFound.description,
-      password: userFound.password,
       image: userFound.image.secure_url,
     });
   } catch (error) {

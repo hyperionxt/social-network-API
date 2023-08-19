@@ -34,3 +34,22 @@ export const passwordTokenRequired = (req, res, next) => {
     });
   }
 };
+
+export const emailTokenRequired = (req, res, next) => {
+  const { token } = req.params;
+  if (!token) {
+    return res.status(401).json({
+      message: "no token, you can not complete your register",
+    });
+  } else {
+    jwt.verify(token, JWT_SECRET_KEY, (err) => {
+      if (err) {
+        return res
+          .status(401)
+          .json({ message: "invalid email token." });
+      }
+      console.log("email token approved.");
+      next();
+    });
+  }
+};

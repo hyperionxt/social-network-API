@@ -7,7 +7,7 @@ const options = {
     info: {
       title: "social network API",
       version: "1.0.0",
-      description: "A simple social network API made by nodejs-express and mongoDB with communities that contains post and users can subcribes to the communities.",
+      description: "A simple social network API made by nodejs-express, mongoDB Atlas and Cloudinary as a cloud service image storage.",
     },
     servers: [
       {
