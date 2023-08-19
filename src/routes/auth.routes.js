@@ -5,7 +5,12 @@ import {
   emailTokenRequired,
   passwordTokenRequired,
 } from "../middlewares/tokenValidator.middleware.js";
-import { signupSchema, signinSchema } from "../schemas/auth.schema.js";
+import {
+  signupSchema,
+  signinSchema,
+  updateProfileSchema,
+  resetPasswordSchema,
+} from "../schemas/auth.schema.js";
 import {
   signIn,
   signUp,
@@ -265,7 +270,13 @@ router.get("/profile/:id", otherUserProfile);
  *
  */
 
-router.put("/profile", authRequired, fileUploadMiddleware, updateProfile);
+router.put(
+  "/profile",
+  authRequired,
+  fileUploadMiddleware,
+  schemaValidator(updateProfileSchema),
+  updateProfile
+);
 
 /**
  * @swagger
@@ -286,6 +297,11 @@ router.put("/profile", authRequired, fileUploadMiddleware, updateProfile);
 
 router.post("/forgot-password", forgotPassword);
 
-router.post("/reset-password/:id/:token", passwordTokenRequired, newPassword);
+router.post(
+  "/reset-password/:id/:token",
+  passwordTokenRequired,
+  schemaValidator(resetPasswordSchema),
+  newPassword
+);
 
 export default router;
