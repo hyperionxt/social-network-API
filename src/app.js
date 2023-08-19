@@ -10,6 +10,7 @@ import commentRoute from "./routes/comment.routes.js";
 import categoryRoute from "./routes/category.routes.js";
 import suscRoute from "./routes/suscription.routes.js";
 import { swaggerServe, swaggerSetup } from "./utils/swagger.js";
+import { cronFunction } from "./utils/cron.js";
 
 const app = express();
 app.use(cors());
@@ -17,6 +18,9 @@ app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());
+
+//task scheduler
+cronFunction()
 
 //routes
 app.use("/api", authRoute);

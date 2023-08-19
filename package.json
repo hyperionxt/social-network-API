@@ -25,6 +25,7 @@
     "mongodb": "^5.7.0",
     "mongoose": "^7.3.2",
     "morgan": "^1.10.0",
+    "node-cron": "^3.0.2",
     "resend": "^0.17.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",

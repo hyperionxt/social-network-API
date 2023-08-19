@@ -18,6 +18,9 @@ export const signupSchema = z.object({
     .string({
       required_error: "Password is required",
     })
+    .min(8, {
+      message: "Password must be at least 8 character",
+    })
     .refine(
       (password) => {
         return (
@@ -31,13 +34,7 @@ export const signupSchema = z.object({
         message:
           "Password must contain at least one uppercase letter, one number, and one symbol",
       }
-    )
-    .min(8, {
-      message: "Password must be at least 8 character",
-    })
-    .min(8, {
-      message: "Password must be at least 8 character",
-    }),
+    ),
 });
 
 export const signinSchema = z.object({
@@ -63,6 +60,9 @@ export const updateProfileSchema = z.object({
   }),
   password: z
     .string()
+    .min(8, {
+      message: "Password must be at least 8 character",
+    })
     .refine(
       (password) => {
         return (
@@ -76,15 +76,15 @@ export const updateProfileSchema = z.object({
         message:
           "Password must contain at least one uppercase letter, one number, one symbol and no spapces.",
       }
-    )
-    .min(8, {
-      message: "Password must be at least 8 character",
-    }),
+    ),
 });
 
 export const resetPasswordSchema = z.object({
   password: z
     .string()
+    .min(8, {
+      message: "Password must be at least 8 character",
+    })
     .refine(
       (password) => {
         return (
@@ -98,8 +98,5 @@ export const resetPasswordSchema = z.object({
         message:
           "Password must contain at least one uppercase letter, one number, one symbol and no spaces.",
       }
-    )
-    .min(8, {
-      message: "Password must be at least 8 character",
-    }),
+    ),
 });
