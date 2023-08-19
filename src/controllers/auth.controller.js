@@ -3,14 +3,12 @@ import {
   createEmailToken,
   createPasswordToken,
 } from "../libs/jwt.js";
-import { RESEND_API_KEY, DOMAIN } from "../config.js";
 import User from "../models/user.model.js";
 //to encrypt the password
 import bcryptjs from "bcryptjs";
 import { uploadImage, deleteImage } from "../utils/cloudinary.js";
 import fs from "fs-extra";
-import { Resend } from "resend";
-import { emailConfirmation } from "../services/resend.js";
+import { emailService } from "../services/resend.js";
 
 export const signUp = async (req, res) => {
   try {
@@ -38,10 +36,10 @@ export const signUp = async (req, res) => {
       id: userCreated._id,
       superuser: userCreated.superuser,
     });
-
+    const subject = "Email confirmaation";
     const url = `http://localhost:3000/api/user-confirmed/${userCreated._id}/${token}`;
 
-    await emailConfirmation(email, url);
+    await emailService(email, url, subject);
 
     res.json({
       id: userCreated._id,
@@ -207,15 +205,10 @@ export const forgotPassword = async (req, res) => {
       email: userFound.email,
       id: userFound._id,
     });
+    subject = "Reset Password";
     const url = `http://localhost:3000/api/reset-password/${userFound._id}/${token}`;
 
-    const resend = new Resend(RESEND_API_KEY);
-    await resend.emails.send({
-      from: DOMAIN,
-      to: email,
-      subject: "recovery password request",
-      text: url,
-    });
+    await emailService(email, url, subject);
     res.status(200).json({ message: "Email sent, please check your inbox" });
   } catch (error) {
     return res.status(404).json({ message: error.message });
@@ -232,12 +225,6 @@ export const newPassword = async (req, res) => {
       { new: true }
     );
     if (!userFound) return res.status(404).json({ message: "User not found" });
-
-    res.json({
-      id: userFound._id,
-      username: userFound.username,
-      email: userFound.email,
-    });
     return res.status(200).json({ message: "Password updated successfully" });
   } catch (err) {
     return res.status(404).json({ message: err.message });
