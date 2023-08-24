@@ -105,6 +105,13 @@ export const updatePost = async (req, res) => {
       };
       await fs.unlinkSync(req.files.image.tempFilePath);
     }
+    const isObjectChanged = await Post.exists({ _id: post._id, __v: post.__v });
+
+    if (isObjectChanged)
+      return res
+        .status(409)
+        .json({ message: "Post was edited by another user" });
+
     res.json({
       title: post.title,
       description: post.description,

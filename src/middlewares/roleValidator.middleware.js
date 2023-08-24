@@ -1,4 +1,3 @@
-import User from "../models/user.model.js";
 
 export const adminRequired = async (req, res, next) => {
   try {

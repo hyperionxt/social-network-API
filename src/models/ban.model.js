@@ -11,7 +11,7 @@ const banSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true, versionKey: false }
+  { timestamps: true}
 );
 
 export default mongoose.model("Ban", banSchema);

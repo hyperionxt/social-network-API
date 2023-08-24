@@ -53,11 +53,14 @@ export const unBanUser = async (req, res) => {
 export const updateBannedUser = async (req, res) => {
   try {
     const reason = req.body;
-    const userFound = await User.findById(req.params.id);
-    if (!userFound) return res.status(404).json({ message: "user not found" });
-    const userBanned = await Ban.findByIdAndUpdate(userFound._id, reason, {
-      new: true,
-    });
+    const userBanned = await Ban.findByIdAndUpdate(
+      { user: req.params.id },
+      reason,
+      {
+        new: true,
+      }
+    );
+    if (!userBanned) return res.status(404).json({ message: "user not found" });
     res.json(userBanned);
   } catch (error) {
     return res.status(500).json({ message: error.message });

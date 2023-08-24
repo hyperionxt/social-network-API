@@ -13,7 +13,7 @@ const categorySchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true, versionKey: false }
+  { timestamps: true}
 );
 
 export default mongoose.model("Category", categorySchema);

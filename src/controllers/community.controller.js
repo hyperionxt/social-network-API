@@ -17,7 +17,7 @@ export const getCommunity = async (req, res) => {
       return res.status(404).json({ message: "community not found" });
     res.json(community);
   } catch (err) {
-    return res.status(500).json({ message: err.message});
+    return res.status(500).json({ message: err.message });
   }
 };
 export const createCommunity = async (req, res) => {
@@ -87,6 +87,16 @@ export const updateCommunity = async (req, res) => {
         secure_url: result.secure_url,
       };
       await fs.unlinkSync(req.files.image.tempFilePath);
+
+      const isObjectChanged = await Community.exists({
+        _id: community.id,
+        __v: community.__v,
+      });
+
+      if (isObjectChanged)
+        return res
+          .status(409)
+          .json({ message: "community was updated by another user" });
     }
     res.json({
       title: community.title,
