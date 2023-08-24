@@ -57,7 +57,7 @@ export const userVerified = async (req, res) => {
         $set: { verified: true },
       },
       { new: true }
-    );
+    ).populate("role");
     if (!newUser)
       return res.status(404).json({ message: "User does not exist" });
     if (req.files?.image) {
@@ -70,6 +70,7 @@ export const userVerified = async (req, res) => {
     }
     const token = await createAccessToken({
       id: newUser._id,
+      id: newUser.role,
     });
     res.cookie("token", token);
     res.json({
@@ -86,7 +87,7 @@ export const userVerified = async (req, res) => {
 export const signIn = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const userFound = await User.findOne({ email });
+    const userFound = await User.findOne({ email: email }).populate("role");
     if (userFound.verified === false)
       return res.status(400).json({
         message:
@@ -99,6 +100,7 @@ export const signIn = async (req, res) => {
 
     const token = await createAccessToken({
       id: userFound._id,
+      role: userFound.role,
     });
     res.cookie("token", token);
     res.json({
@@ -107,7 +109,6 @@ export const signIn = async (req, res) => {
       email: userFound.email,
       superuser: userFound.superuser,
     });
-    
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

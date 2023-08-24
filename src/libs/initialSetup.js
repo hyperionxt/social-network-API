@@ -44,7 +44,7 @@ export const createAdminProfile = async () => {
     console.log(chalk.cyan("Email: ", email));
     console.log(chalk.cyan("Password: ", password));
     console.log(chalk.green("Admin profile created successfully!"));
-    console.log('Login with this credentials and go to this endpoint to change it using PUT method: http://localhost:3000/api/profile');
+    console.log(chalk.yellow('Login with this credentials and go to this endpoint to change it using PUT method: http://localhost:3000/api/profile'));
   } catch (error) {
     console.error(error);
   }

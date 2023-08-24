@@ -2,8 +2,7 @@ import User from "../models/user.model.js";
 
 export const adminRequired = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id).populate("role");
-    if (user.role.title !== "admin")
+    if (req.user.role.title !== "admin")
       return res.status(403).json({ message: "not authorized" });
     next();
   } catch (err) {
@@ -13,8 +12,7 @@ export const adminRequired = async (req, res, next) => {
 
 export const moderatorOrAdmin = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id).populate("role");
-    if (user.role.title !== "moderator" && user.role.title !== "admin")
+    if (req.user.role.title !== "moderator" && req.user.role.title !== "admin")
       return res.status(403).json({ message: "not authorized" });
     next();
   } catch (err) {
