@@ -9,6 +9,7 @@ import {
   getComments,
   updateComments,
 } from "../controllers/comment.controller.js";
+import { commentPermissions } from "../middlewares/autModAdm.middleware.js";
 
 const router = Router();
 
@@ -25,7 +26,18 @@ router.post(
   schemaValidator(createCommentSchema),
   createReply
 );
-router.delete("/comments/:commentId", authRequired, deleteComments);
-router.put("/comments/:commentId", authRequired, updateComments);
+router.delete(
+  "/comments/:commentId",
+  authRequired,
+  commentPermissions,
+  deleteComments
+);
+router.put(
+  "/comments/:commentId",
+  authRequired,
+  commentPermissions,
+  schemaValidator(createCommentSchema),
+  updateComments
+);
 
 export default router;

@@ -30,7 +30,7 @@ const communitySchema = new mongoose.Schema(
       secure_url: String,
     },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 export default mongoose.model("Community", communitySchema);

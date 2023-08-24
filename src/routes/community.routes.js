@@ -10,6 +10,7 @@ import {
 import { schemaValidator } from "../middlewares/schemaValidator.middleware.js";
 import { createCommunitySchema } from "../schemas/community.schema.js";
 import { fileUploadMiddleware } from "../middlewares/fileUpload.middleware.js";
+import { communityPermissions } from "../middlewares/autModAdm.middleware.js";
 
 const router = Router();
 
@@ -178,7 +179,12 @@ router.post(
  *
  */
 
-router.delete("/community/:id", authRequired, deleteCommunity);
+router.delete(
+  "/community/:id",
+  authRequired,
+  communityPermissions,
+  deleteCommunity
+);
 
 /**
  * @swagger
@@ -222,6 +228,7 @@ router.delete("/community/:id", authRequired, deleteCommunity);
 router.put(
   "/community/:id",
   authRequired,
+  communityPermissions,
   fileUploadMiddleware,
   updateCommunity
 );

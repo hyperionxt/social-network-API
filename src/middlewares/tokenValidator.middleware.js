@@ -42,13 +42,12 @@ export const emailTokenRequired = (req, res, next) => {
       message: "no token, you can not complete your register",
     });
   } else {
-    jwt.verify(token, JWT_SECRET_KEY, (err) => {
+    jwt.verify(token, JWT_SECRET_KEY, (err, userDecoded) => {
       if (err) {
-        return res
-          .status(401)
-          .json({ message: "invalid email token." });
+        return res.status(401).json({ message: "invalid email token." });
       }
       console.log("email token approved.");
+      req.user = userDecoded;
       next();
     });
   }

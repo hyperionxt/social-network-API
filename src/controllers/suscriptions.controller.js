@@ -7,8 +7,8 @@ export const getSuscriptions = async (req, res) => {
       user: req.user.id,
     });
     res.json(suscriptions);
-  } catch {
-    return res.status(500).json({ message: "something went wrong" });
+  } catch(err) {
+    return res.status(500).json({ message: err.message });
   }
 };
 export const createSuscription = async (req, res) => {
@@ -19,8 +19,8 @@ export const createSuscription = async (req, res) => {
     });
     await newSuscription.save();
     res.json(newSuscription);
-  } catch {
-    return res.status(500).json({ message: "something went wrong" });
+  } catch(err) {
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -34,7 +34,7 @@ export const deleteSuscription = async (req, res) => {
     if (!suscription)
       return res.status(400).json({ message: "suscription not found" });
     return res.status(204).json({ message: "suscription deleted" });
-  } catch {
-    return res.status(500).json({ message: "something went wrong" });
+  } catch(err) {
+    return res.status(500).json({ message: err.message });
   }
 };

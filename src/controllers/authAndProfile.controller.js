@@ -4,11 +4,12 @@ import {
   createPasswordToken,
 } from "../libs/jwt.js";
 import User from "../models/user.model.js";
+import Role from "../models/role.models.js";
 //to encrypt the password
 import bcryptjs from "bcryptjs";
 import { uploadImage, deleteImage } from "../utils/cloudinary.js";
 import fs from "fs-extra";
-import { emailService } from "../services/resend.js";
+import { emailService } from "../utils/resend.js";
 
 export const signUp = async (req, res) => {
   try {
@@ -22,41 +23,41 @@ export const signUp = async (req, res) => {
     const usernameFound = await User.findOne({ username });
     if (usernameFound)
       return res.status(400).json({ message: "Username already in use" });
-
+    const roleFound = await Role.findOne({ title: "regular" });
     const passHash = await bcryptjs.hash(password, 10);
 
     const newUser = new User({
       email,
       password: passHash,
       username,
+      role: roleFound._id,
     });
 
     const userCreated = await newUser.save();
     const token = await createEmailToken({
       id: userCreated._id,
-      superuser: userCreated.superuser,
+      role: userCreated.role,
     });
     const subject = "Email confirmaation";
-    const url = `http://localhost:3000/api/user-confirmed/${userCreated._id}/${token}`;
+    const url = `http://localhost:3000/api/user-verified/${token}`;
 
     await emailService(email, url, subject);
 
-    res.json({
-      id: userCreated._id,
-      username: userCreated.username,
-      email: userCreated.email,
-      image: userCreated.image,
-    });
+    return res.status(201).json({ message: "Email sent" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
-export const userConfirmed = async (req, res) => {
+export const userVerified = async (req, res) => {
   try {
-    const newUser = await User.findByIdAndUpdate(req.params.id, {
-      $set: { confirmed: true },
-    });
+    const newUser = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        $set: { verified: true },
+      },
+      { new: true }
+    );
     if (!newUser)
       return res.status(404).json({ message: "User does not exist" });
     if (req.files?.image) {
@@ -69,7 +70,6 @@ export const userConfirmed = async (req, res) => {
     }
     const token = await createAccessToken({
       id: newUser._id,
-      superuser: newUser.superuser,
     });
     res.cookie("token", token);
     res.json({
@@ -87,10 +87,10 @@ export const signIn = async (req, res) => {
   const { email, password } = req.body;
   try {
     const userFound = await User.findOne({ email });
-    if (userFound.confirmed === false)
+    if (userFound.verified === false)
       return res.status(400).json({
         message:
-          "email not confirmed, check your inbox for the confirmation link",
+          "email not verified, check your inbox and use the confirmation link",
       });
     if (!userFound) return res.status(400).json({ message: "User not found" });
 
@@ -99,7 +99,6 @@ export const signIn = async (req, res) => {
 
     const token = await createAccessToken({
       id: userFound._id,
-      superuser: userFound.superuser,
     });
     res.cookie("token", token);
     res.json({
@@ -108,7 +107,7 @@ export const signIn = async (req, res) => {
       email: userFound.email,
       superuser: userFound.superuser,
     });
-    console.log("Welcome, " + userFound.username);
+    
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -159,24 +158,34 @@ export const otherUserProfile = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const { password, username, email, description } = req.body;
-    const userData = {};
-
-    if (password) {
-      const hashedPassword = await bcryptjs.hash(password, 10);
-      userData.password = hashedPassword;
-    }
-    if (email) userData.email = email;
-
-    if (description) userData.description = description;
-
-    if (username) userData.username = username;
-
-    const userFound = await User.findByIdAndUpdate(req.user.id, userData, {
-      new: true,
-    });
-
+    const { oldPassword, password, username, email, description } = req.body;
+    const userFound = await User.findById(req.user.id);
     if (!userFound) return res.status(500).json({ message: "User not found" });
+
+    if (oldPassword) {
+      const match = await bcryptjs.compare(oldPassword, userFound.password);
+      if (!match) return res.status(400).json({ message: "Invalid password" });
+
+      const hashedPassword = await bcryptjs.hash(password, 10);
+      userFound.password = hashedPassword;
+    }
+
+    if (email) {
+      const emailFound = await User.findOne({ email });
+      if (emailFound)
+        return res.status(400).json({ message: "Email already in use" });
+      userFound.email = email;
+    }
+    if (description) userFound.description = description;
+
+    if (username) {
+      const usernameFound = await User.findOne({ username });
+      if (usernameFound)
+        return res.status(400).json({ message: "Username already in use" });
+      userFound.username = username;
+    }
+    const updatedUser = await userFound.save();
+
     if (req.files?.image) {
       if (userFound.image?.public_id) {
         await deleteImage(userFound.image.public_id);
@@ -188,7 +197,13 @@ export const updateProfile = async (req, res) => {
       };
       await fs.unlinkSync(req.files.image.tempFilePath);
     }
-    res.json(userFound);
+    res.json({
+      username: updatedUser.username,
+      email: updatedUser.email,
+      description: updatedUser.description,
+      verified: updatedUser.verified,
+      image: updatedUser.image.secure_url,
+    });
     console.log("Profile updated successfully");
   } catch (error) {
     return res.status(404).json({ message: error.message });

@@ -3,12 +3,15 @@ import {
   createPost,
   deletePost,
   getPost,
+  getPostByCommunity,
   getPosts,
   updatePost,
 } from "../controllers/post.controller.js";
 import { authRequired } from "../middlewares/tokenValidator.middleware.js";
 import { validateSchema } from "../../../000_project_one/src/middlewares/validator.middleware.js";
 import { createPostSchema } from "../schemas/post.schema.js";
+import { postPermissions } from "../middlewares/autModAdm.middleware.js";
+import { fileUploadMiddleware } from "../middlewares/fileUpload.middleware.js";
 
 /**
  * @swagger
@@ -88,6 +91,8 @@ const router = Router();
 
 router.get("/posts", getPosts);
 
+router.get("/posts/:communityId", getPostByCommunity);
+
 /**
  * @swagger
  * /api/post/{id}:
@@ -140,6 +145,7 @@ router.get("/post/:id", getPost);
 router.post(
   "/post",
   authRequired,
+  fileUploadMiddleware,
   validateSchema(createPostSchema),
   createPost
 );
@@ -166,11 +172,11 @@ router.post(
  *        description: The post was deleted
  *      404:
  *        description: The post was not found
- *      
- *  
+ *
+ *
  */
 
-router.delete("/post/:id", authRequired, deletePost);
+router.delete("/post/:id", authRequired, postPermissions, deletePost);
 
 /**
  * @swagger
@@ -208,6 +214,12 @@ router.delete("/post/:id", authRequired, deletePost);
  *        description: some error server.
  *
  */
-router.put("/post/:id/", authRequired, updatePost);
+router.put(
+  "/post/:id/",
+  authRequired,
+  postPermissions,
+  fileUploadMiddleware,
+  updatePost
+);
 
 export default router;

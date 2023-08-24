@@ -5,8 +5,11 @@ export const signupSchema = z.object({
     .string({
       required_error: "Username is required",
     })
-    .max(15, { message: "Username must be less than 15 characters" })
-    .refine((value) => !/\s/.test(value), { message: "No spaces allowed" }),
+    .max(20, { message: "Username must be less than 20 characters" })
+    .min(6, { message: "Username must be at least 6 character" })
+    .refine((value) => !/\s/.test(value) && /^[a-zA-Z0-9]+$/.test(value), {
+      message: "Only numbers & letters",
+    }),
   email: z
     .string({
       required_error: "Email is required",
@@ -32,7 +35,7 @@ export const signupSchema = z.object({
       },
       {
         message:
-          "Password must contain at least one uppercase letter, one number, and one symbol",
+          "Password must contain at least one uppercase letter, one number, one symbol and no spaces",
       }
     ),
 });
@@ -74,7 +77,7 @@ export const updateProfileSchema = z.object({
       },
       {
         message:
-          "Password must contain at least one uppercase letter, one number, one symbol and no spapces.",
+          "Password must contain at least one uppercase letter, one number, one symbol and no spaces.",
       }
     ),
 });

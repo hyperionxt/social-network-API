@@ -1,19 +1,21 @@
 import cron from "node-cron";
 import User from "../models/user.model.js";
 
-export const cronFunction = () => {
+export const unverifiedUsers = () => {
   try {
-    cron.schedule("*/30 * * * *", async () => {
-      const localTime = new Date();
-      localTime.setHours(localTime.getHours() - 2);
+    cron.schedule("0 0 * * *", async () => {
+      const currentTime = new Date();
+      const nextTask = new Date(currentTime.getTime() + 24 * 60 * 60 * 1000);
+      currentTime.setHours(currentTime.getHours() - 2);
 
-      await User.deleteMany({
-        confirmed: false,
-        createdAt: { $lt: localTime },
+      const documents = await User.deleteMany({
+        verified: false,
+        createdAt: { $lt: currentTime },
       });
 
-      console.log("Delete expired documents(User) task completed!");
-      console.log("Next task in 30 minutes")
+      console.log(`Task completed at ${new Date()}`);
+      console.log(`Deleted ${documents.deletedCount()} unverified users.`);
+      console.log(`Next check at ${nextTask}`);
     });
   } catch (error) {
     console.log(error);

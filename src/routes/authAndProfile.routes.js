@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { schemaValidator } from "../middlewares/schemaValidator.middleware.js";
+import { profilePermissions } from "../middlewares/autModAdm.middleware.js";
 import {
   authRequired,
   emailTokenRequired,
@@ -10,7 +11,7 @@ import {
   signinSchema,
   updateProfileSchema,
   resetPasswordSchema,
-} from "../schemas/auth.schema.js";
+} from "../schemas/user.schema.js";
 import {
   signIn,
   signUp,
@@ -20,8 +21,8 @@ import {
   forgotPassword,
   newPassword,
   otherUserProfile,
-  userConfirmed,
-} from "../controllers/auth.controller.js";
+  userVerified,
+} from "../controllers/authAndProfile.controller.js";
 import { fileUploadMiddleware } from "../middlewares/fileUpload.middleware.js";
 
 const router = Router();
@@ -135,7 +136,7 @@ router.post(
   signUp
 );
 
-router.post("/user-confirmed/:id/:token", emailTokenRequired, userConfirmed);
+router.post("/user-confirmed/:token", emailTokenRequired, userVerified);
 
 /**
  * @swagger
@@ -273,7 +274,9 @@ router.get("/profile/:id", otherUserProfile);
 router.put(
   "/profile",
   authRequired,
+  profilePermissions,
   fileUploadMiddleware,
+  profilePermissions,
   schemaValidator(updateProfileSchema),
   updateProfile
 );

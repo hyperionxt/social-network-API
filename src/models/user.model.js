@@ -27,11 +27,12 @@ const userSchema = mongoose.Schema(
       required: false,
       default: "",
     },
-    superuser: {
-      type: Boolean,
-      default: false,
+    role: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Role",
+      required: true,
     },
-    confirmed:{
+    verified: {
       type: Boolean,
       default: false,
     },
@@ -43,9 +44,14 @@ const userSchema = mongoose.Schema(
       public_id: String,
       secure_url: String,
     },
+    banned: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
+    versionKey: false,
   }
 );
 

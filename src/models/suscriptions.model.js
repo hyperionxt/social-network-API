@@ -15,9 +15,9 @@ const suscriptionSchema = new mongoose.Schema(
     edited: {
       type: Boolean,
       default: false,
-    }
+    },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 export default mongoose.model("Suscription", suscriptionSchema);

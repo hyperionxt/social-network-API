@@ -1,14 +1,25 @@
 import Category from "../models/category.model.js";
 import Post from "../models/post.model.js";
 
+export const getCategories = async (req, res) => {
+  try {
+    const categories = await Category.find();
+    if (!categories)
+      return res.status(404).json({ message: "No categories created yet" });
+
+    res.json(categories);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 export const getPostsByCategory = async (req, res) => {
   try {
     const categoryMatch = await Category.findById(req.params.id);
     if (!categoryMatch)
       return res.status(404).json({ message: "Category not found" });
     const post = await Post.find({ category: categoryMatch._id });
-    if (!post)
-      return res.status(404).json({ message: "Post not found" });
+    if (!post) return res.status(404).json({ message: "Post not found" });
     res.json(post);
   } catch (err) {
     return res.status(500).json({ message: err.message });

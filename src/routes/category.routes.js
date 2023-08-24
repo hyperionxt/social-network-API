@@ -1,14 +1,15 @@
 import { Router } from "express";
-import { superUserRequired } from "../middlewares/superuserValidator.middleware.js";
 import { authRequired } from "../middlewares/tokenValidator.middleware.js";
 import {
   createCategory,
   deleteCategory,
+  getCategories,
   getPostsByCategory,
   updateCategory,
 } from "../controllers/catetgory.controller.js";
 import { schemaValidator } from "../middlewares/schemaValidator.middleware.js";
 import { createCategorySchema } from "../schemas/category.schema.js";
+import { adminRequired } from "../middlewares/roleValidator.middleware.js";
 
 const router = Router();
 
@@ -72,6 +73,8 @@ const router = Router();
 
 router.get("/category/:id", getPostsByCategory);
 
+router.get("/categories", getCategories)
+
 /**
  * @swagger
  * /api/category:
@@ -101,7 +104,7 @@ router.get("/category/:id", getPostsByCategory);
 router.post(
   "/new-category",
   authRequired,
-  superUserRequired,
+  adminRequired,
   schemaValidator(createCategorySchema),
   createCategory
 );
@@ -130,7 +133,7 @@ router.post(
  *
  *
  */
-router.delete("/category/:id", authRequired, superUserRequired, deleteCategory);
+router.delete("/category/:id", authRequired, adminRequired, deleteCategory);
 
 /**
  * @swagger
@@ -168,6 +171,6 @@ router.delete("/category/:id", authRequired, superUserRequired, deleteCategory);
  *
  */
 
-router.put("/category/:id", authRequired, superUserRequired, updateCategory);
+router.put("/category/:id", authRequired, adminRequired, updateCategory);
 
 export default router;

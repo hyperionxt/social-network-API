@@ -47,7 +47,7 @@ export function createEmailToken(payload) {
       payload,
       JWT_SECRET_KEY,
       {
-        expiresIn: "2h",  //1 hour,
+        expiresIn: "1h",  //1 hour,
       },
       (err, token) => {
         if (err) {
