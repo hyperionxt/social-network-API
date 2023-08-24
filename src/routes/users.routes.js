@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { schemaValidator } from "../middlewares/schemaValidator.middleware.js";
+import { signupSchema } from "../schemas/user.schema.js";
 import {
   createUser,
   deleteUser,
@@ -15,9 +17,15 @@ import {
 const router = Router();
 
 router.get("/users", authRequired, adminRequired, getUsers);
-router.get("/users/:id", authRequired, adminRequired, getUser);
-router.post("/users", authRequired, adminRequired, createUser);
-router.put("/users/:id", authRequired, moderatorOrAdmin, updateUser);
-router.delete("/users/:id", authRequired, adminRequired, deleteUser);
+router.get("/user/:id", authRequired, adminRequired, getUser);
+router.post(
+  "/user",
+  authRequired,
+  adminRequired,
+  schemaValidator(signupSchema),
+  createUser
+);
+router.put("/user/:id", authRequired, moderatorOrAdmin, updateUser);
+router.delete("/user/:id", authRequired, adminRequired, deleteUser);
 
 export default router;

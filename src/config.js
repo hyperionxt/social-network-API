@@ -2,6 +2,8 @@ import { config } from "dotenv";
 config();
 //BACKEND PORT
 export const PORT = process.env.PORT;
+//CLIENT DOMAIN
+export const CLIENT = process.env.CLIENT
 //MONGODB CONNECTION STRING
 export const MONGODB_URI = process.env.MONGODB_URI;
 //SECRET KEY JWT

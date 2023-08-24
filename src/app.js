@@ -10,13 +10,19 @@ import commentRoute from "./routes/comment.routes.js";
 import categoryRoute from "./routes/category.routes.js";
 import usersRoute from "./routes/users.routes.js";
 import suscRoute from "./routes/suscription.routes.js";
+import banRoutes from "./routes/ban.routes.js";
 import { createRoles, createAdminProfile } from "./libs/initialSetup.js";
 import { swaggerServe, swaggerSetup } from "./utils/swagger.js";
 import { unverifiedUsers } from "./utils/cron.js";
+import { CLIENT } from "./config.js";
 
 //express config
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: CLIENT,
+  })
+);
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());
@@ -37,6 +43,7 @@ app.use("/api", categoryRoute);
 app.use("/api", suscRoute);
 app.use("/api", commentRoute);
 app.use("/api", usersRoute);
+app.use("/api", banRoutes);
 
 //swagger doc
 app.use("/api/docs", swaggerServe, swaggerSetup);

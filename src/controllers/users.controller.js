@@ -1,6 +1,6 @@
 import User from "../models/user.model.js";
 import { deleteImage, uploadImage } from "../utils/cloudinary.js";
-import * as bcryptjs from "bcryptjs";
+import bcryptjs from "bcryptjs";
 
 export const getUsers = async (req, res) => {
   try {
@@ -38,6 +38,7 @@ export const createUser = async (req, res) => {
       return res.status(400).json({ message: "Username already in use" });
 
     const roleFound = await User.findOne({ title: role });
+    if (!roleFound) return res.status(400).json({ message: "role not found" });
 
     const passHash = await bcryptjs.hash(password, 10);
 
@@ -108,20 +109,6 @@ export const deleteUser = async (req, res) => {
     if (!userFound) return res.status(404).json({ message: "user not found" });
     await User.findByIdAndDelete(req.params.id);
     res.json({ message: "user deleted" });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-
-export const bannedUser = async (req, res) => {
-  try {
-    const bannedReason = req.body;
-    const userFound = await User.findById(req.params.id);
-    if (!userFound) return res.status(404).json({ message: "user not found" });
-    userFound.banned = true;
-    userFound.bannedReason = bannedReason;
-    await userFound.save();
-    res.json({ message: "user banned" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
