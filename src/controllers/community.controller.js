@@ -1,10 +1,18 @@
 import Community from "../models/community.model.js";
 import fs from "fs-extra";
 import { uploadImage, deleteImage } from "../utils/cloudinary.js";
+import { redisClient } from "../utils/redis.js";
 
 export const getCommunities = async (req, res) => {
   try {
-    const communities = await Community.find();
+    const reply = await redisClient.get("communities");
+    if (reply) return res.json(JSON.parse(reply));
+    const communities = await Community.find()
+      .populate("user", "username")
+      .populate("category", "title");
+
+    await redisClient.set("communities", JSON.stringify(communities));
+    await redisClient.expire("communities", 15);
     res.json(communities);
   } catch (err) {
     return res.status(500).json({ message: "something went wrong" });
@@ -12,7 +20,13 @@ export const getCommunities = async (req, res) => {
 };
 export const getCommunity = async (req, res) => {
   try {
-    const community = await Community.findById(req.params.id);
+    const reply = await redisClient.get(req.params.id);
+    if (reply) return res.json(JSON.parse(reply));
+    const community = await Community.findById(req.params.id)
+      .populate("user", "username")
+      .populate("category", "title");
+      await redisClient.set(req.params.id, JSON.stringify(community));
+      await redisClient.expire(req.params.id, 15) 
     if (!community)
       return res.status(404).json({ message: "community not found" });
     res.json(community);

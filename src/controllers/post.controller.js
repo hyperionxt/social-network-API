@@ -1,9 +1,47 @@
 import Post from "../models/post.model.js";
+import Community from "../models/community.model.js";
 import { deleteImage, uploadImage } from "../utils/cloudinary.js";
+import { redisClient } from "../utils/redis.js";
 
 export const getPosts = async (req, res) => {
   try {
-    const posts = await Post.find().sort({ createdAt: -1 });
+    const reply = await redisClient.get("posts");
+    if (reply) return res.json(JSON.parse(reply));
+
+    const posts = await Post.find()
+      .populate("user", "username")
+      .populate("community", "title")
+      .sort({ createdAt: -1 });
+
+    await redisClient.set("posts", JSON.stringify(posts));
+    await redisClient.expire("posts".id, 15) 
+
+    if (posts.length === 0)
+      return res
+        .status(200)
+        .json({ message: "there are no posts published yet." });
+
+    res.json(posts);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+export const getPostByCommunity = async (req, res) => {
+  try {
+    const reply = await redisClient.get(req.params.id);
+    if (reply) return res.json(JSON.parse(reply));
+
+    const posts = await Post.find({ community: req.params.id })
+      .sort({
+        createdAt: -1,
+      })
+      .populate("user", "username")
+      .populate("community", "title");
+
+    await redisClient.set(req.params.id, JSON.stringify(posts));
+    await redisClient.expire(req.params.id, 15) 
+
     if (posts.length === 0)
       return res
         .status(200)
@@ -14,24 +52,17 @@ export const getPosts = async (req, res) => {
   }
 };
 
-export const getPostByCommunity = async (req, res) => {
-  try {
-    const post = await Post.find({ community: req.params.communityId }).sort({
-      createdAt: -1,
-    });
-    if (post.length === 0)
-      return res
-        .status(200)
-        .json({ message: "there are no posts published yet." });
-    res.json(post);
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-};
-
 export const getPost = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const reply = await redisClient.get(req.params.id);
+    if (reply) return res.json(JSON.parse(reply));
+
+    const post = await Post.findById(req.params.id)
+      .populate("user", "username")
+      .populate("community", "title");
+    await redisClient.set(req.params.id, JSON.stringify(post));
+    await redisClient.expire(req.params.id, 15)
+
     if (!post) return res.status(404).json({ message: "post not found" });
     res.json(post);
   } catch (err) {
@@ -41,13 +72,18 @@ export const getPost = async (req, res) => {
 
 export const createPost = async (req, res) => {
   try {
-    const { title, description, category, community } = req.body;
+    const { title, description, category } = req.body;
+    const communityFound = await Community.findById(req.params.id);
+    if (!communityFound)
+      return res
+        .status(404)
+        .json({ message: "community not found, can not post" });
     const newPost = new Post({
       title,
       description,
       user: req.user.id,
       category,
-      community,
+      community: communityFound.id,
     });
 
     if (req.files?.image) {

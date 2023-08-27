@@ -5,6 +5,7 @@ import {
   createUser,
   deleteUser,
   getUser,
+  getUserByUsername,
   getUsers,
   updateUser,
 } from "../controllers/users.controller.js";
@@ -17,6 +18,7 @@ import {
 const router = Router();
 
 router.get("/users", authRequired, adminRequired, getUsers);
+router.get("/searchUser", authRequired, adminRequired, getUserByUsername);
 router.get("/user/:id", authRequired, adminRequired, getUser);
 router.post(
   "/user",

@@ -1,7 +1,9 @@
 import app from "./app.js";
 import { connectDB } from "./utils/mongoose.js";
 import { PORT } from "./config.js";
+import { connectRedis } from "./utils/redis.js";
 
+connectRedis()
 connectDB();
 app.listen(PORT);
 console.log(

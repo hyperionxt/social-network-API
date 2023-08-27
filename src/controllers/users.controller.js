@@ -1,10 +1,16 @@
 import User from "../models/user.model.js";
 import { deleteImage, uploadImage } from "../utils/cloudinary.js";
 import bcryptjs from "bcryptjs";
+import { redisClient } from "../utils/redis.js";
 
 export const getUsers = async (req, res) => {
   try {
-    const users = await User.find();
+    const reply = await redisClient.get("users");
+    if (reply) return res.json(JSON.parse(reply));
+
+    const users = await User.find().populate("role", "title");
+    await redisClient.set("users", JSON.stringify(users));
+    await redisClient.expire("users", 15);
     if (!users.length === 0)
       return res
         .status(200)
@@ -15,9 +21,29 @@ export const getUsers = async (req, res) => {
   }
 };
 
+export const getUserByUsername = async (req, res) => {
+  try {
+    const reply = await redisClient.get(req.query.username);
+    if (reply) return res.json(JSON.parse(reply));
+    const userFound = await User.find({
+      username: { $regex: req.query.username, $options: "i" },
+    });
+    await redisClient.set(req.query.username, JSON.stringify(userFound));
+    await redisClient.expire(req.query.username, 15);
+    res.json(userFound);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 export const getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const reply = await redisClient.get(req.params.id);
+    if (reply) return res.json(JSON.parse(reply));
+
+    const user = await User.findById(req.params.id).populate("role", "title");
+    await redisClient.set(req.params.id, JSON.stringify(user));
+    await redisClient.expire(req.params.id, 15);
     if (!user) return res.status(404).json({ message: "user not found" });
     res.json(user);
   } catch (error) {

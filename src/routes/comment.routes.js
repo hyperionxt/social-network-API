@@ -6,20 +6,23 @@ import {
   createComments,
   createReply,
   deleteComments,
-  getComments,
+  getCommentOrReply,
+  getCommentsByPost,
   updateComments,
 } from "../controllers/comment.controller.js";
 import { commentPermissions } from "../middlewares/autModAdm.middleware.js";
 
 const router = Router();
 
-router.get("/comments/:postId", getComments);
+router.get("/comments/:postId", getCommentsByPost);
+router.get("/comment/:commentId", getCommentOrReply);
 router.post(
   "/comments/:postId",
   authRequired,
   schemaValidator(createCommentSchema),
   createComments
 );
+
 router.post(
   "/comments/reply/:commentId/:postId",
   authRequired,

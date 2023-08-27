@@ -91,7 +91,7 @@ const router = Router();
 
 router.get("/posts", getPosts);
 
-router.get("/posts/:communityId", getPostByCommunity);
+router.get("/posts/community/:id", getPostByCommunity);
 
 /**
  * @swagger
@@ -143,7 +143,7 @@ router.get("/post/:id", getPost);
  *        description: Some server error
  */
 router.post(
-  "/post",
+  "/post/:id",
   authRequired,
   fileUploadMiddleware,
   validateSchema(createPostSchema),

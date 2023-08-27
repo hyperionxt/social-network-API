@@ -5,11 +5,11 @@ import {
 } from "../libs/jwt.js";
 import User from "../models/user.model.js";
 import Role from "../models/role.models.js";
-//to encrypt the password
 import bcryptjs from "bcryptjs";
 import { uploadImage, deleteImage } from "../utils/cloudinary.js";
 import fs from "fs-extra";
 import { emailService } from "../utils/resend.js";
+import { redisClient } from "../utils/redis.js";
 
 export const signUp = async (req, res) => {
   try {
@@ -123,8 +123,12 @@ export const signOut = (req, res) => {
 
 export const myProfile = async (req, res) => {
   try {
-    const userFound = await User.findById(req.user.id);
+    const reply = await redisClient.get(req.user.id);
+    if (reply) return res.json(JSON.parse(reply));
 
+    const userFound = await User.findById(req.user.id);
+    await redisClient.set(req.user.id, JSON.stringify(userFound));
+    await redisClient.expire(req.user.id, 15);
     if (!userFound)
       return res.status(404).json({ message: "User does not exist" });
 
@@ -142,7 +146,11 @@ export const myProfile = async (req, res) => {
 
 export const otherUserProfile = async (req, res) => {
   try {
+    const reply = await redisClient.get(req.params.id);
+    if (reply) return res.json(JSON.parse(reply));
     const userFound = await User.findById(req.params.id);
+    await redisClient.set(req.params.id, JSON.stringify(userFound));
+    await redisClient.expire(req.params.id, 15);
 
     if (!userFound)
       return res.status(404).json({ message: "User does not exist" });

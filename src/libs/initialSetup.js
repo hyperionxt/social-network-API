@@ -2,20 +2,21 @@ import Role from "../models/role.models.js";
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import chalk from "chalk";
+import { redisClient } from "../utils/redis.js";
 
 export const createRoles = async () => {
   try {
     const elements = await Role.estimatedDocumentCount();
     if (elements > 0) return;
 
-    const roles = await Promise.all([
+    await Promise.all([
       new Role({ title: "regular" }).save(),
       new Role({ title: "moderator" }).save(),
       new Role({ title: "admin" }).save(),
     ]);
     console.log("regular, moderator and admin roles created successfully");
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 };
 
@@ -39,13 +40,19 @@ export const createAdminProfile = async () => {
     });
     await newAdmin.save();
 
-    console.log("\n")
+    console.log("\n");
     console.log(chalk.cyan("Username: ", username));
     console.log(chalk.cyan("Email: ", email));
     console.log(chalk.cyan("Password: ", password));
     console.log(chalk.green("Admin profile created successfully!"));
-    console.log(chalk.yellow('Login with this credentials and go to this endpoint to change it using PUT method: http://localhost:3000/api/profile'));
+    console.log(
+      chalk.yellow(
+        "Login with this credentials and go to this endpoint to change it using PUT method: http://localhost:3000/api/profile"
+      )
+    );
   } catch (error) {
     console.error(error);
   }
 };
+
+

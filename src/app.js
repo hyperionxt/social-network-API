@@ -11,10 +11,12 @@ import categoryRoute from "./routes/category.routes.js";
 import usersRoute from "./routes/users.routes.js";
 import suscRoute from "./routes/suscription.routes.js";
 import banRoutes from "./routes/ban.routes.js";
+import searchRoute from "./routes/search.routes.js";
 import { createRoles, createAdminProfile } from "./libs/initialSetup.js";
 import { swaggerServe, swaggerSetup } from "./utils/swagger.js";
 import { unverifiedUsers } from "./utils/cron.js";
 import { CLIENT } from "./config.js";
+import responseTime from "response-time";
 
 //express config
 const app = express();
@@ -23,6 +25,9 @@ app.use(
     origin: CLIENT,
   })
 );
+
+app.use(responseTime());
+
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());
@@ -44,6 +49,7 @@ app.use("/api", suscRoute);
 app.use("/api", commentRoute);
 app.use("/api", usersRoute);
 app.use("/api", banRoutes);
+app.use("/api", searchRoute);
 
 //swagger doc
 app.use("/api/docs", swaggerServe, swaggerSetup);
