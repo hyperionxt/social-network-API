@@ -10,9 +10,13 @@ import { uploadImage, deleteImage } from "../utils/cloudinary.js";
 import fs from "fs-extra";
 import { emailService } from "../utils/resend.js";
 import { redisClient } from "../utils/redis.js";
+import mongoose from "mongoose";
 
 export const signUp = async (req, res) => {
+  const session = await mongoose.startSession();
+
   try {
+    session.startTransaction();
     const { email, password, username } = req.body;
 
     const emailFound = await User.findOne({ email });
@@ -33,7 +37,7 @@ export const signUp = async (req, res) => {
       role: roleFound._id,
     });
 
-    const userCreated = await newUser.save();
+    const userCreated = await newUser.save({ session });
     const token = await createEmailToken({
       id: userCreated._id,
       role: userCreated.role,
@@ -43,23 +47,34 @@ export const signUp = async (req, res) => {
 
     await emailService(email, url, subject);
 
+    await session.commitTransaction();
+    session.endSession();
+
     return res.status(201).json({ message: "Email sent" });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+
     return res.status(500).json({ message: error.message });
   }
 };
 
 export const userVerified = async (req, res) => {
+  const session = await mongoose.startSession();
+
   try {
     const newUser = await User.findByIdAndUpdate(
       req.user.id,
       {
         $set: { verified: true },
       },
-      { new: true }
+      { new: true, session }
     ).populate("role");
-    if (!newUser)
+    if (!newUser) {
+      await session.abortTransaction();
+      session.endSession();
       return res.status(404).json({ message: "User does not exist" });
+    }
     if (req.files?.image) {
       const result = await uploadImage(req.files.image.tempFilePath);
       newUser.image = {
@@ -79,7 +94,11 @@ export const userVerified = async (req, res) => {
       email: newUser.email,
       image: newUser.image.secure_url,
     });
+
+    await session.commitTransaction();
+    session.endSession();
   } catch (error) {
+    session.endSession();
     return res.status(500).json({ message: error.message });
   }
 };
@@ -166,34 +185,52 @@ export const otherUserProfile = async (req, res) => {
 };
 
 export const updateProfile = async (req, res) => {
+  const session = await mongoose.startSession();
+
   try {
+    session.startTransaction();
     const { oldPassword, password, username, email, description } = req.body;
-    const userFound = await User.findById(req.user.id);
-    if (!userFound) return res.status(500).json({ message: "User not found" });
+    const userFound = await User.findById(req.user.id).sesion(session);
+    if (!userFound) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(500).json({ message: "User not found" });
+    }
 
     if (oldPassword) {
       const match = await bcryptjs.compare(oldPassword, userFound.password);
-      if (!match) return res.status(400).json({ message: "Invalid password" });
+      if (!match) {
+        await session.abortTransaction();
+        session.endSession();
+        return res.status(400).json({ message: "Invalid password" });
+      }
 
       const hashedPassword = await bcryptjs.hash(password, 10);
       userFound.password = hashedPassword;
     }
 
     if (email) {
-      const emailFound = await User.findOne({ email });
-      if (emailFound)
+      const emailFound = await User.findOne({ email }).session(session);
+      if (emailFound) {
+        await session.abortTransaction();
+        session.endSession();
         return res.status(400).json({ message: "Email already in use" });
+      }
+
       userFound.email = email;
     }
     if (description) userFound.description = description;
 
     if (username) {
       const usernameFound = await User.findOne({ username });
-      if (usernameFound)
+      if (usernameFound) {
+        await session.abortTransaction();
+        session.endSession();
         return res.status(400).json({ message: "Username already in use" });
+      }
       userFound.username = username;
     }
-    const updatedUser = await userFound.save();
+    const updatedUser = await userFound.save({ session });
 
     if (req.files?.image) {
       if (userFound.image?.public_id) {
@@ -206,6 +243,8 @@ export const updateProfile = async (req, res) => {
       };
       await fs.unlinkSync(req.files.image.tempFilePath);
     }
+    await session.commitTransaction();
+    session.endSession();
     res.json({
       username: updatedUser.username,
       email: updatedUser.email,
@@ -215,6 +254,8 @@ export const updateProfile = async (req, res) => {
     });
     console.log("Profile updated successfully");
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     return res.status(404).json({ message: error.message });
   }
 };
@@ -240,17 +281,26 @@ export const forgotPassword = async (req, res) => {
 };
 
 export const newPassword = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
     const { password } = req.body;
     const passHash = await bcryptjs.hash(password, 10);
     const userFound = await User.findByIdAndUpdate(
       req.params.id,
       { $set: { password: passHash } },
-      { new: true }
+      { new: true, session }
     );
-    if (!userFound) return res.status(404).json({ message: "User not found" });
+    if (!userFound) {
+      await session.abortTransaction();
+      await session.endSession();
+      return res.status(404).json({ message: "User not found" });
+    }
     return res.status(200).json({ message: "Password updated successfully" });
   } catch (err) {
+    await session.abortTransaction();
+    await session.endSession();
+
     return res.status(404).json({ message: err.message });
   }
 };

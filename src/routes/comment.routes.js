@@ -17,14 +17,14 @@ const router = Router();
 router.get("/comments/:postId", getCommentsByPost);
 router.get("/comment/:commentId", getCommentOrReply);
 router.post(
-  "/comments/:postId",
+  "/comment/:postId",
   authRequired,
   schemaValidator(createCommentSchema),
   createComments
 );
 
 router.post(
-  "/comments/reply/:commentId/:postId",
+  "/comment/reply/:commentId/:postId",
   authRequired,
   schemaValidator(createCommentSchema),
   createReply

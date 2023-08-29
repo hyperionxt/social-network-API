@@ -7,7 +7,13 @@ export const getCommentsByPost = async (req, res) => {
     if (reply) return res.json(JSON.parse(reply));
 
     const comments = await Comment.find({ post: req.params.postId })
-      .sort({ createAt: -1 })
+      .populate({
+        path: "replies",
+        populate: {
+          path: "user",
+          select: "username",
+        },
+      })
       .populate("user", "username");
     await redisClient.set(req.params.postId, JSON.stringify(comments));
     await redisClient.expire(req.params.postId, 15);
@@ -54,11 +60,10 @@ export const createComments = async (req, res) => {
 
 export const createReply = async (req, res) => {
   try {
-    const text = req.body.text;
+    const { text } = req.body;
     const newReply = new Comment({
       text,
       user: req.user.id,
-      post: req.params.postId,
       parentComment: req.params.commentId,
     });
     await newReply.save();

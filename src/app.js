@@ -12,6 +12,7 @@ import usersRoute from "./routes/users.routes.js";
 import suscRoute from "./routes/suscription.routes.js";
 import banRoutes from "./routes/ban.routes.js";
 import searchRoute from "./routes/search.routes.js";
+import reportRoute from "./routes/report.routes.js";
 import { createRoles, createAdminProfile } from "./libs/initialSetup.js";
 import { swaggerServe, swaggerSetup } from "./utils/swagger.js";
 import { unverifiedUsers } from "./utils/cron.js";
@@ -50,6 +51,7 @@ app.use("/api", commentRoute);
 app.use("/api", usersRoute);
 app.use("/api", banRoutes);
 app.use("/api", searchRoute);
+app.use("/api", reportRoute)
 
 //swagger doc
 app.use("/api/docs", swaggerServe, swaggerSetup);

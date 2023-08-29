@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "test": "set NODE_OPTIONS=--experimental-vm-modules && jest"
+    "test": "set NODE_OPTIONS=--experimental-vm-modules && jest --detectOpenHandles"
   },
   "keywords": [],
   "author": "",
@@ -34,7 +34,10 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "jest": "^29.6.4",
     "nodemon": "^3.0.1",
-    "response-time": "^2.3.2"
+    "response-time": "^2.3.2",
+    "supertest": "^6.3.3",
+    "uuid": "^9.0.0"
   }
 }

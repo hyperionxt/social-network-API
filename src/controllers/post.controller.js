@@ -72,7 +72,7 @@ export const getPost = async (req, res) => {
 
 export const createPost = async (req, res) => {
   try {
-    const { title, description, category } = req.body;
+    const { title, text, category } = req.body;
     const communityFound = await Community.findById(req.params.id);
     if (!communityFound)
       return res
@@ -80,7 +80,7 @@ export const createPost = async (req, res) => {
         .json({ message: "community not found, can not post" });
     const newPost = new Post({
       title,
-      description,
+      text,
       user: req.user.id,
       category,
       community: communityFound.id,
@@ -122,7 +122,7 @@ export const updatePost = async (req, res) => {
       {
         $set: {
           title: req.body.title,
-          description: req.body.description,
+          text: req.body.text,
           edited: true,
         },
       },
@@ -150,7 +150,7 @@ export const updatePost = async (req, res) => {
 
     res.json({
       title: post.title,
-      description: post.description,
+      text: post.text,
       image: image.secure_url,
     });
   } catch (err) {
