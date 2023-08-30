@@ -15,7 +15,11 @@ import searchRoute from "./routes/search.routes.js";
 import reportRoute from "./routes/report.routes.js";
 import { createRoles, createAdminProfile } from "./libs/initialSetup.js";
 import { swaggerServe, swaggerSetup } from "./utils/swagger.js";
-import { unverifiedUsers } from "./utils/cron.js";
+import {
+  unverifiedUsers,
+  deleteOldReports,
+  unbanningUsers,
+} from "./utils/cron.js";
 import { CLIENT } from "./config.js";
 import responseTime from "response-time";
 
@@ -28,7 +32,6 @@ app.use(
 );
 
 app.use(responseTime());
-
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());
@@ -40,6 +43,8 @@ createAdminProfile();
 
 //task scheduler
 unverifiedUsers();
+deleteOldReports();
+unbanningUsers();
 
 //routes
 app.use("/api", authAndProfileRoute);
@@ -51,7 +56,7 @@ app.use("/api", commentRoute);
 app.use("/api", usersRoute);
 app.use("/api", banRoutes);
 app.use("/api", searchRoute);
-app.use("/api", reportRoute)
+app.use("/api", reportRoute);
 
 //swagger doc
 app.use("/api/docs", swaggerServe, swaggerSetup);

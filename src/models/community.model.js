@@ -21,6 +21,10 @@ const communitySchema = new mongoose.Schema(
         required: true,
       },
     ],
+    members: {
+      type: Number,
+      default: 0,
+    },
     edited: {
       type: Boolean,
       default: false,
@@ -30,7 +34,7 @@ const communitySchema = new mongoose.Schema(
       secure_url: String,
     },
   },
-  { timestamps: true}
+  { timestamps: true }
 );
 
 export default mongoose.model("Community", communitySchema);

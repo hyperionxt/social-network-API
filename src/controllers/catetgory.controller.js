@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Category from "../models/category.model.js";
 import Post from "../models/post.model.js";
 
@@ -27,35 +28,71 @@ export const getPostsByCategory = async (req, res) => {
 };
 
 export const createCategory = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
     const { title } = req.body;
+    const categoryFound = await Category.findOne({ title });
+    if (categoryFound) {
+      await session.abortTransaction();
+      await session.endSession();
+
+      return res.status(400).json({ message: "Category already exists" });
+    }
+
     const newCategory = new Category({
       title,
       author: req.user.id,
     });
-    await newCategory.save();
+    await newCategory.save({ session });
+    await session.commitTransaction();
+    await session.endSession();
+
     res.json(newCategory);
   } catch (err) {
+    await session.endSession();
     return res.status(500).json({ message: err.message });
   }
 };
 export const deleteCategory = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
     const category = await Category.findByIdAndDelete(req.params.id);
-    if (!category)
+    if (!category) {
+      await session.abortTransaction();
+      await session.endSession();
       return res.status(404).json({ message: "Category not found" });
+    }
+    await session.commitTransaction();
+    await session.endSession();
+    return res.status(200).json({ message: "Category deleted" });
   } catch (err) {
+    await session.endSession();
     return res.status(500).json({ message: err.message });
   }
 };
 export const updateCategory = async (req, res) => {
+  const session = await mongoose.startSession();
+
   try {
+    session.startTransaction();
+
     const category = await Category.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
+      session,
     });
-    if (!category)
+    if (!category) {
+      await session.abortTransaction();
+      await session.endSession();
       return res.status(404).json({ message: "Category not found" });
+    }
+    await session.commitTransaction();
+    await session.endSession();
+    return res.json({ message: "category updated!" });
   } catch (err) {
+    await session.endSession();
+
     return res.status(500).json({ message: err.message });
   }
 };

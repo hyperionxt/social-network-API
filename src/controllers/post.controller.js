@@ -2,6 +2,8 @@ import Post from "../models/post.model.js";
 import Community from "../models/community.model.js";
 import { deleteImage, uploadImage } from "../utils/cloudinary.js";
 import { redisClient } from "../utils/redis.js";
+import mongoose from "mongoose";
+import fs from "fs-extra";
 
 export const getPosts = async (req, res) => {
   try {
@@ -14,7 +16,7 @@ export const getPosts = async (req, res) => {
       .sort({ createdAt: -1 });
 
     await redisClient.set("posts", JSON.stringify(posts));
-    await redisClient.expire("posts".id, 15) 
+    await redisClient.expire("posts".id, 15);
 
     if (posts.length === 0)
       return res
@@ -40,7 +42,7 @@ export const getPostByCommunity = async (req, res) => {
       .populate("community", "title");
 
     await redisClient.set(req.params.id, JSON.stringify(posts));
-    await redisClient.expire(req.params.id, 15) 
+    await redisClient.expire(req.params.id, 15);
 
     if (posts.length === 0)
       return res
@@ -61,7 +63,7 @@ export const getPost = async (req, res) => {
       .populate("user", "username")
       .populate("community", "title");
     await redisClient.set(req.params.id, JSON.stringify(post));
-    await redisClient.expire(req.params.id, 15)
+    await redisClient.expire(req.params.id, 15);
 
     if (!post) return res.status(404).json({ message: "post not found" });
     res.json(post);
@@ -71,13 +73,18 @@ export const getPost = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
     const { title, text, category } = req.body;
     const communityFound = await Community.findById(req.params.id);
-    if (!communityFound)
+    if (!communityFound) {
+      await session.abortTransaction();
+      await session.endSession();
       return res
         .status(404)
         .json({ message: "community not found, can not post" });
+    }
     const newPost = new Post({
       title,
       text,
@@ -95,9 +102,18 @@ export const createPost = async (req, res) => {
 
       await fs.unlinkSync(req.files.image.tempFilePath);
     }
-    await newPost.save();
-    res.json(newPost);
+    await newPost.save({ session });
+    await session.commitTransaction();
+    await session.endSession();
+    res.json({
+      title: newPost.title,
+      text: newPost.text,
+      user: newPost.user,
+      category: newPost.category,
+      image: newPost.image,
+    });
   } catch (err) {
+    await session.endSession();
     return res.status(500).json({ message: err.message });
   }
 };
@@ -116,7 +132,9 @@ export const deletePost = async (req, res) => {
 };
 
 export const updatePost = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
     const post = await Post.findByIdAndUpdate(
       req.params.id,
       {
@@ -126,10 +144,14 @@ export const updatePost = async (req, res) => {
           edited: true,
         },
       },
-      { new: true }
+      { new: true, session }
     );
 
-    if (!post) return res.status(404).json({ message: "post not found" });
+    if (!post) {
+      await session.abortTransaction();
+      await session.endSession();
+      return res.status(404).json({ message: "post not found" });
+    }
     if (req.files?.image) {
       if (post.image?.public_id) {
         await deleteImage(post.image.public_id);
@@ -143,17 +165,23 @@ export const updatePost = async (req, res) => {
     }
     const isObjectChanged = await Post.exists({ _id: post._id, __v: post.__v });
 
-    if (isObjectChanged)
+    if (isObjectChanged) {
+      await session.abortTransaction();
+      await session.endSession();
+
       return res
         .status(409)
-        .json({ message: "Post was edited by another user" });
-
+        .json({ message: "Some error occured, please try again" });
+    }
+    await session.commitTransaction();
+    await session.endSession();
     res.json({
       title: post.title,
       text: post.text,
       image: image.secure_url,
     });
   } catch (err) {
+    await session.endSession();
     return res.status(500).json({ message: err.message });
   }
 };

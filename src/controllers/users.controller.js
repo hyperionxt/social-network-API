@@ -124,6 +124,7 @@ export const updateUser = async (req, res) => {
       };
       await fs.unlinkSync(req.files.image.tempFilePath);
     }
+    res.json(updatedUser);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

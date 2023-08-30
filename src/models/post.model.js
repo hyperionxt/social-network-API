@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema(
   {
@@ -22,6 +22,10 @@ const postSchema = new mongoose.Schema(
         required: true,
       },
     ],
+    image:{
+      public_id: String,
+      secure_url: String,
+    },
     community: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Community",

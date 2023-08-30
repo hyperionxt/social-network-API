@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import Post from "../models/post.model.js";
 import Community from "../models/community.model.js";
 import Report from "../models/report.model.js";
+import mongoose from "mongoose";
 
 export const getReports = async (req, res) => {
   try {
@@ -25,14 +26,19 @@ export const getReportsById = async (req, res) => {
   }
 };
 export const createReport = async (req, res) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
+
     const { context } = req.body;
     const userFound = await User.findById(req.params.id);
-    if (!userFound || userFound.verified === false)
+    if (!userFound || userFound.verified === false) {
+      await session.endSession();
+      await session.abortTransaction();
       return res.status(400).json({ message: "invalid user" });
+    }
 
     let elementFound;
-
     elementFound = await Post.findOne({ _id: req.params.element });
     if (!elementFound) {
       elementFound = await Comment.findOne({ _id: req.params.element });
@@ -42,6 +48,8 @@ export const createReport = async (req, res) => {
     }
 
     if (!elementFound) {
+      await session.endSession();
+      await session.abortTransaction();
       return res.status(404).json({ message: "Object not found or invalid" });
     }
     const newReport = new Report({
@@ -54,10 +62,13 @@ export const createReport = async (req, res) => {
         title: elementFound.title,
       }, //saving text or title in cases when users delete the prof and then admin cant find it.
     });
-    await newReport.save();
+    await newReport.save({ session });
 
+    await session.commitTransaction();
+    await session.endSession();
     return res.status(200).json(newReport);
   } catch (error) {
+    await session.endSesssion();
     return res.status(500).json({ message: error.message });
   }
 };
