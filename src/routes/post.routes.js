@@ -8,8 +8,8 @@ import {
   updatePost,
 } from "../controllers/post.controller.js";
 import { authRequired } from "../middlewares/tokenValidator.middleware.js";
-import { validateSchema } from "../../../000_project_one/src/middlewares/validator.middleware.js";
-import { createPostSchema } from "../schemas/post.schema.js";
+import { schemaValidator } from "../middlewares/schemaValidator.middleware.js";
+import { createPostSchema, updatePostSchema } from "../schemas/post.schema.js";
 import { postPermissions } from "../middlewares/autModAdm.middleware.js";
 import { fileUploadMiddleware } from "../middlewares/fileUpload.middleware.js";
 
@@ -146,7 +146,7 @@ router.post(
   "/post/:id",
   authRequired,
   fileUploadMiddleware,
-  validateSchema(createPostSchema),
+  schemaValidator(createPostSchema),
   createPost
 );
 
@@ -218,6 +218,7 @@ router.put(
   "/post/:id/",
   authRequired,
   postPermissions,
+  schemaValidator(updatePostSchema),
   fileUploadMiddleware,
   updatePost
 );

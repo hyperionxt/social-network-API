@@ -19,7 +19,7 @@ import {
   unverifiedUsers,
   deleteOldReports,
   unbanningUsers,
-} from "./utils/cron.js";
+} from "./utils/tasks.cron.js";
 import { CLIENT } from "./config.js";
 import responseTime from "response-time";
 

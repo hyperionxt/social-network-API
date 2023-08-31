@@ -2,7 +2,6 @@ import Role from "../models/role.models.js";
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import chalk from "chalk";
-import { redisClient } from "../utils/redis.js";
 
 export const createRoles = async () => {
   try {
