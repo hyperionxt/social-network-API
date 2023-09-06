@@ -11,9 +11,12 @@
 * Client side can implement login by google, the user model is ready for that.  
 * Everything is modularized for re-use in other projects.
 * MongoDB Atlas.
+* Redis as cache db
+* Project dockerized.
+* Transactions
 
 ### Developing:
-* Updating and adding new Swagger doc
+* nginx, mailchimp and updating swagger doc
 
 ## More details:
 
@@ -65,12 +68,12 @@
 
 ### Swagger endpoints documentation:
 
-* available at http://localhost:{your-backend-port}/api/docs  
+* available at http://localhost:{local-port}/api/docs
 
 
 ## How to install
 
-1. Type ``npm i `` in root path to get all dependencies from package.json.
+1. Type ``npm i `` in root path to get all dependencies from package.json. otherwise you can also dockerize using ``docker compose up``
 
 2. Create a cluster in your [MongoDB Atlas](https://www.mongodb.com/atlas/database) project.
   
@@ -84,19 +87,24 @@
 
       create a .env file in the root path and inside define 9 variables:
       
-        PORT = your port backend server.
+        DOCKER_PORT = docker port backend server.
+        LOCAL_PORT = local port backend server.
         MONGODB_URI = your mongodb atlas connection string(remember replace your password user inside of this string)
         SECRET_KEY = secret key token for JWT middleware.  
         RESEND_API_KEY = API key from your Resend account  
         DOMAIN = your registered domain.
         CLOUD_NAME = from your cloudinary account.
         API_KEY = from your cloudinary account.
-        API_SECRET = from your cloudinary account. 
+        API_SECRET = from your cloudinary account.
+        REDIS_HOST = db name
+        REDIS_PORT = redis port 6379 as default
+        REDIS_PASS = create a new one here
 
 5. Type ``npm run dev`` in root path to run the backend.
 
-
-note: endpoints were tested with [Thunder Client VSC](https://www.thunderclient.com/) extension
+note:
+  endpoints were tested with [Thunder Client VSC](https://www.thunderclient.com/) extension
+  tests done with jest and supertest
 
 ## Find a bug?
 
