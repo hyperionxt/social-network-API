@@ -1,13 +1,18 @@
 import mongoose from "mongoose";
 import Category from "../models/category.model.js";
 import Post from "../models/post.model.js";
+import { redisClient } from "../utils/redis.js";
 
 export const getCategories = async (req, res) => {
   try {
+    const reply = await redisClient.get("categories");
+    if (reply) return res.json(JSON.parse(reply));
+
     const categories = await Category.find();
     if (!categories)
       return res.status(404).json({ message: "No categories created yet" });
-
+    await redisClient.set("categories", JSON.stringify(categories));
+    await redisClient.expire("categories", 15);
     res.json(categories);
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -16,12 +21,13 @@ export const getCategories = async (req, res) => {
 
 export const getPostsByCategory = async (req, res) => {
   try {
-    const categoryMatch = await Category.findById(req.params.id);
-    if (!categoryMatch)
-      return res.status(404).json({ message: "Category not found" });
-    const post = await Post.find({ category: categoryMatch._id });
-    if (!post) return res.status(404).json({ message: "Post not found" });
-    res.json(post);
+    const reply = await redisClient.get(req.params.id);
+    if (reply) return res.json(JSON.parse(reply));
+    const postsFound = await Post.find({ category: req.params.id });
+    if (!postsFound) return res.status(404).json({ message: "Not found" });
+    await redisClient.set(req.params.id, JSON.stringify(postsFound));
+    await redisClient.expire(req.params.id, 15);
+    res.json(postsFound);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }

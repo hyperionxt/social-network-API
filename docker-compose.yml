@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  rediscache:
+    image: redis
+    env_file: ./.env
+    command: redis-server --loglevel warning --requirepass $REDIS_PASS
+    restart: always
+    ports:
+      - $REDIS_PORT:$REDIS_PORT
+  api:
+    build: .
+    depends_on:
+      - rediscache
+    links:
+      - rediscache
+    ports:
+      - $LOCAL_PORT:$DOCKER_PORT
+
+    

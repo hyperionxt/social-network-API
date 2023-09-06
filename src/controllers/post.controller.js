@@ -16,7 +16,7 @@ export const getPosts = async (req, res) => {
       .sort({ createdAt: -1 });
 
     await redisClient.set("posts", JSON.stringify(posts));
-    await redisClient.expire("posts".id, 15);
+    await redisClient.expire("posts", 15);
 
     if (posts.length === 0)
       return res
