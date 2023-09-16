@@ -21,7 +21,6 @@ import {
   unbanningUsers,
 } from "./utils/tasks.cron.js";
 import { CLIENT } from "./config.js";
-import responseTime from "response-time";
 
 //express config
 const app = express();
@@ -31,7 +30,6 @@ app.use(
   })
 );
 
-app.use(responseTime());
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());

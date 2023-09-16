@@ -18,5 +18,6 @@ export const API_KEY = process.env.API_KEY;
 export const API_SECRET = process.env.API_SECRET;
 //REDIS CONFIG
 export const REDIS_HOST = process.env.REDIS_HOST;
-export const REDIS_PORT = process.env.REDIS_PORT;
+export const REDIS_DOCKER_PORT = process.env.REDIS_DOCKER_PORT;
+export const REDIS_LOCAL_PORT = process.env.REDIS_LOCAL_PORT;
 export const REDIS_PASS = process.env.REDIS_PASS;

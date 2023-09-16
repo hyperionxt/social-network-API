@@ -1,7 +1,7 @@
 import Role from "../models/role.models.js";
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
-import chalk from "chalk";
+import { LOCAL_PORT } from "../config.js";
 
 export const createRoles = async () => {
   try {
@@ -40,18 +40,14 @@ export const createAdminProfile = async () => {
     await newAdmin.save();
 
     console.log("\n");
-    console.log(chalk.cyan("Username: ", username));
-    console.log(chalk.cyan("Email: ", email));
-    console.log(chalk.cyan("Password: ", password));
-    console.log(chalk.green("Admin profile created successfully!"));
+    console.log("Username: ", username);
+    console.log("Email: ", email);
+    console.log("Password: ", password);
+    console.log("Admin profile created successfully!");
     console.log(
-      chalk.yellow(
-        "Login with this credentials and go to this endpoint to change it using PUT method: http://localhost:3000/api/profile"
-      )
+      `Login with this credentials and go to this endpoint to change it using PUT method: http://localhost:${LOCAL_PORT}/api/profile`
     );
   } catch (error) {
     console.error(error);
   }
 };
-
-
