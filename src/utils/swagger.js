@@ -1,5 +1,6 @@
 import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUI from "swagger-ui-express";
+import { LOCAL_PORT } from "../config.js";
 
 const options = {
   definition: {
@@ -7,11 +8,12 @@ const options = {
     info: {
       title: "social network API",
       version: "1.0.0",
-      description: "A simple social network API made by nodejs-express, mongoDB Atlas and Cloudinary as a cloud service image storage.",
+      description:
+        "Simple social network API made by nodejs-express.",
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: `http://localhost:${LOCAL_PORT}`,
       },
     ],
   },
@@ -21,3 +23,5 @@ const options = {
 const specs = swaggerJsDoc(options);
 export const swaggerServe = swaggerUI.serve;
 export const swaggerSetup = swaggerUI.setup(specs);
+
+

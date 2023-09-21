@@ -2,7 +2,7 @@ import { createClient } from "redis";
 import { REDIS_HOST, REDIS_PORT, REDIS_PASS } from "../config.js";
 
 export const redisClient = createClient({
-  url: `redis://:${REDIS_PASS}@${REDIS_HOST}:${REDIS_PORT}`
+  url: `redis://:${REDIS_PASS}@${REDIS_HOST}:${REDIS_PORT}`,
 });
 
 export const connectRedis = async () => {
