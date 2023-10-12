@@ -1,26 +1,26 @@
-import express from "express";
+import express, { Response, Request } from "express";
 import morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import authAndProfileRoute from "./routes/authAndProfile.routes.js";
-import postRoute from "./routes/post.routes.js";
-import communityRoute from "./routes/community.routes.js";
-import commentRoute from "./routes/comment.routes.js";
-import categoryRoute from "./routes/category.routes.js";
-import usersRoute from "./routes/users.routes.js";
-import suscRoute from "./routes/suscription.routes.js";
-import banRoutes from "./routes/ban.routes.js";
-import searchRoute from "./routes/search.routes.js";
-import reportRoute from "./routes/report.routes.js";
-import { createRoles, createAdminProfile } from "./libs/initialSetup.js";
-import { swaggerServe, swaggerSetup } from "./utils/swagger.js";
+import authAndProfileRoute from "./routes/authAndProfile.routes";
+import postRoute from "./routes/post.routes";
+import communityRoute from "./routes/community.routes";
+import commentRoute from "./routes/comment.routes";
+import categoryRoute from "./routes/category.routes";
+import usersRoute from "./routes/users.routes";
+import suscRoute from "./routes/suscription.routes";
+import banRoutes from "./routes/ban.routes";
+import searchRoute from "./routes/search.routes";
+import reportRoute from "./routes/report.routes";
+import { createRoles, createAdminProfile } from "./libs/initialSetup";
+import { swaggerServe, swaggerSetup } from "./utils/swagger";
 import {
   unverifiedUsers,
   deleteOldReports,
   unbanningUsers,
-} from "./utils/tasks.cron.js";
-import { CLIENT } from "./config.js";
+} from "./utils/tasks.cron";
+import { CLIENT } from "./config";
 
 //express config
 const app = express();
@@ -60,7 +60,7 @@ app.use("/api", reportRoute);
 app.use("/api/docs", swaggerServe, swaggerSetup);
 
 //if route is not found, send 404 status.
-app.use((req, res) => {
+app.use((req: Request, res: Response) => {
   res.status(404).json({ message: "page not found" });
 });
 

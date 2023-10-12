@@ -16,7 +16,7 @@
 * Transactions
 
 ### Developing:
-* nginx, mailchimp and updating swagger doc, convertion to TS.
+* mailchimp and swagger doc.
 
 ## More details:
 

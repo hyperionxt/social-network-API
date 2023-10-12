@@ -1,5 +1,5 @@
-import app from "./app.js";
-import { connectDB } from "./utils/mongoose.js";
+import app from "./app";
+import { connectDB } from "./utils/mongoose";
 import { DOCKER_PORT, LOCAL_PORT } from "./config";
 import { connectRedis } from "./utils/redis";
 

@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const tokenValidator_middleware_1 = require("../middlewares/tokenValidator.middleware");
+const schemaValidator_middleware_1 = require("../middlewares/schemaValidator.middleware");
+const report_schema_1 = require("../schemas/report.schema");
+const reports_controller_1 = require("../controllers/reports.controller");
+const roleValidator_middleware_1 = require("../middlewares/roleValidator.middleware");
+const router = (0, express_1.Router)();
+router.get("/reports", tokenValidator_middleware_1.authRequired, reports_controller_1.getReports);
+router.get("/report/:id", tokenValidator_middleware_1.authRequired, roleValidator_middleware_1.moderatorOrAdmin, reports_controller_1.getReportsById);
+router.post("/report/:elementId/:userId", tokenValidator_middleware_1.authRequired, (0, schemaValidator_middleware_1.schemaValidator)(report_schema_1.createReportSchema), reports_controller_1.createReport);
+exports.default = router;

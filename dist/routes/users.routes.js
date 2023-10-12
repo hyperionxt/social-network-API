@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const schemaValidator_middleware_1 = require("../middlewares/schemaValidator.middleware");
+const user_schema_1 = require("../schemas/user.schema");
+const users_controller_1 = require("../controllers/users.controller");
+const tokenValidator_middleware_1 = require("../middlewares/tokenValidator.middleware");
+const roleValidator_middleware_1 = require("../middlewares/roleValidator.middleware");
+const router = (0, express_1.Router)();
+router.get("/users", tokenValidator_middleware_1.authRequired, roleValidator_middleware_1.adminRequired, users_controller_1.getUsers);
+router.get("/searchUser", tokenValidator_middleware_1.authRequired, roleValidator_middleware_1.adminRequired, users_controller_1.getUserByUsername);
+router.get("/user/:id", tokenValidator_middleware_1.authRequired, roleValidator_middleware_1.adminRequired, users_controller_1.getUser);
+router.post("/user", tokenValidator_middleware_1.authRequired, roleValidator_middleware_1.adminRequired, (0, schemaValidator_middleware_1.schemaValidator)(user_schema_1.signupSchema), users_controller_1.createUser);
+router.put("/user/:id", tokenValidator_middleware_1.authRequired, roleValidator_middleware_1.moderatorOrAdmin, users_controller_1.updateUser);
+router.delete("/user/:id", tokenValidator_middleware_1.authRequired, roleValidator_middleware_1.adminRequired, users_controller_1.deleteUser);
+exports.default = router;
