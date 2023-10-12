@@ -16,7 +16,7 @@
 * Transactions
 
 ### Developing:
-* nginx, mailchimp and updating swagger doc
+* mailchimp and swagger doc.
 
 ## More details:
 
@@ -73,7 +73,7 @@
 
 ## How to install
 
-1. Type ``npm i `` in root path to get all dependencies from package.json. otherwise you can also dockerize using ``docker compose up``
+1. Type ``npm i `` in root path to get all dependencies from package.json. you can also dockerize it using ``docker compose up``
 
 2. Create a cluster in your [MongoDB Atlas](https://www.mongodb.com/atlas/database) project.
   
@@ -97,10 +97,11 @@
         API_KEY = from your cloudinary account.
         API_SECRET = from your cloudinary account.
         REDIS_HOST = db name
-        REDIS_PORT = redis port 6379 as default
+        REDIS_DOCKER_PORT = redis port 6379 as default
+        REDIS_LOCAL_PORT = redis local port
         REDIS_PASS = create a new one here
 
-5. Type ``npm run dev`` in root path to run the backend.
+5. Type ``npm run dev`` in root path or if you used docker, just run the container.
 
 note:
   endpoints were tested with [Thunder Client VSC](https://www.thunderclient.com/) extension

@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const tokenValidator_middleware_1 = require("../middlewares/tokenValidator.middleware");
+const schemaValidator_middleware_1 = require("../middlewares/schemaValidator.middleware");
+const comment_schema_1 = require("../schemas/comment.schema");
+const comment_controller_1 = require("../controllers/comment.controller");
+const autModAdm_middleware_1 = require("../middlewares/autModAdm.middleware");
+const router = (0, express_1.Router)();
+router.get("/comments/:postId", comment_controller_1.getCommentsByPost);
+router.get("/comment/:commentId", comment_controller_1.getCommentOrReply);
+router.post("/comment/:postId", tokenValidator_middleware_1.authRequired, (0, schemaValidator_middleware_1.schemaValidator)(comment_schema_1.createCommentSchema), comment_controller_1.createComments);
+router.post("/comment/reply/:commentId/:postId", tokenValidator_middleware_1.authRequired, (0, schemaValidator_middleware_1.schemaValidator)(comment_schema_1.createCommentSchema), comment_controller_1.createReply);
+router.delete("/comments/:commentId", tokenValidator_middleware_1.authRequired, autModAdm_middleware_1.commentPermissions, comment_controller_1.deleteComments);
+router.put("/comments/:commentId", tokenValidator_middleware_1.authRequired, autModAdm_middleware_1.commentPermissions, (0, schemaValidator_middleware_1.schemaValidator)(comment_schema_1.createCommentSchema), comment_controller_1.updateComments);
+exports.default = router;

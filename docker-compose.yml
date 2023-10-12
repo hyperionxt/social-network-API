@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   rediscache:
@@ -7,14 +7,29 @@ services:
     command: redis-server --loglevel warning --requirepass $REDIS_PASS
     restart: always
     ports:
-      - $REDIS_PORT:$REDIS_PORT
-  api:
+      - $REDIS_LOCAL_PORT:$REDIS_DOCKER_PORT
+  api_1:
     build: .
     depends_on:
       - rediscache
     links:
       - rediscache
     ports:
-      - $LOCAL_PORT:$DOCKER_PORT
+      - $LOCAL_PORT1:$DOCKER_PORT1
+  api_2:
+    build: .
+    depends_on:
+      - rediscache
+    links:
+      - rediscache
+    ports:
+      - $LOCAL_PORT2:$DOCKER_PORT2
 
-    
+  nginx:
+    image: nginx:latest
+    ports:
+      - $NGINX_LOCAL_PORT:$NGINX_DOCKER_PORT
+    depends_on:
+      - api_1
+    volumes:
+      - .\nginx-config:/etc/nginx/nginx.conf
